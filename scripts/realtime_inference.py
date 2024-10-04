@@ -16,7 +16,7 @@ from musetalk.utils.blending import get_image,get_image_prepare_material,get_ima
 from musetalk.utils.utils import load_all_model
 import shutil
 
-from ffmpeg_util import combine_audio_video
+from .ffmpeg_util import combine_audio_video
 import threading
 import queue
 
