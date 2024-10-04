@@ -8,7 +8,18 @@ import uvicorn
 from omegaconf import OmegaConf
 from .pipeline import InferenceExecutor
 import json
+import logging
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Define the log message format
+    handlers=[
+        logging.StreamHandler()  # Outputs log messages to the console
+    ]
+)
 
+# Get a logger instance
+logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # CORS configuration
@@ -45,19 +56,14 @@ def get_video_stream(file_path: str, start: int = 0, end: int = None) -> Iterato
                     break
 
 @app.get("/chat_live")
-async def stream_video(request: Request):
+async def stream_video_live(request: Request):
     # Manually read the body as a JSON object
     body_bytes = await request.body()
     if not body_bytes:
         return {"message": "Received JSON in chat_live request", "body": body_bytes}
     body = json.loads(body_bytes)
     input_text = body['question']
-    
-    file_path = "../data/video/yongen.mp4"
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Video not found")
-
-    range_header = request.headers.get('range')
+    logger.info(f"stream_video_live input {input_text}")
 
     return StreamingResponse(
         inference_executor.run_simple_video_inference_step(input_text),
@@ -65,7 +71,7 @@ async def stream_video(request: Request):
     )
     
 @app.get("/chat")
-async def stream_video(request: Request):
+async def stream_video_chat(request: Request):
     file_path = "../data/video/yongen.mp4"
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Video not found")
