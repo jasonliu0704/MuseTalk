@@ -6,7 +6,7 @@ from typing import Iterator
 import os
 import uvicorn
 from omegaconf import OmegaConf
-from pipeline import InferenceExecutor
+from .pipeline import InferenceExecutor
 import json
 
 app = FastAPI()
@@ -109,3 +109,4 @@ if __name__ == "__main__":
     main()
 
 # uvicorn server:app --host 0.0.0.0 --port 8000
+# python -m scripts.server
