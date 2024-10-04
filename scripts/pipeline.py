@@ -167,7 +167,7 @@ class InferenceExecutor:
                 avatar_id = avatar_id, 
                 video_path = video_path, 
                 bbox_shift = bbox_shift, 
-                batch_size = args.batch_size,
+                batch_size = batch_size,
                 preparation= data_preparation)
         
         #init chattts instance
