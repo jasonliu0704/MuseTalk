@@ -306,7 +306,7 @@ class Avatar:
             # The path to the audio file to open, or the audio waveform
             whisper_feature = audio_processor.audio2feat(wav_chunk)
             whisper_chunks = audio_processor.feature2chunks(feature_array=whisper_feature,fps=fps)
-            print(f"processing audio:{audio_path} costs {(time.time() - start_time) * 1000}ms")
+            print(f"processing audio: costs {(time.time() - start_time) * 1000}ms")
             ############################################## inference batch by batch ##############################################
             video_num = len(whisper_chunks)   
             res_frame_queue = queue.Queue()
