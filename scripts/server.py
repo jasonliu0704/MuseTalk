@@ -24,7 +24,7 @@ app.add_middleware(
 inference_config = OmegaConf.load("configs/inference/realtime.yaml")
 print(inference_config)
 
-inference_executor = InferenceExecutor(0,inference_config)
+inference_executor = InferenceExecutor(0,inference_config, 1)
 
 
 def get_video_stream(file_path: str, start: int = 0, end: int = None) -> Iterator[bytes]:
@@ -102,7 +102,7 @@ async def stream_video(request: Request):
 # The main entry point
 def main():
     # Run the Uvicorn server with FastAPI app
-    uvicorn.run("server:app", host="0.0.0.1", port=8000, reload=True)
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
 
 # If the script is run directly, invoke the main function
 if __name__ == "__main__":

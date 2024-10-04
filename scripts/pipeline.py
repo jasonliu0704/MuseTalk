@@ -152,15 +152,16 @@ def chattts_infer(text:str):
 
 @torch.no_grad() 
 class InferenceExecutor:
-    def __init__(self, avatar_id,
-                                    inference_config:dict, source: str = "local",
+    def __init__(self, avatar_id, inference_config:dict, batch_size:int,
+                 source: str = "local",
     custom_path: str = "", stream: bool = True):
-        self.avatar_id = avatar_id
-        self.video_path = video_path
-        self.bbox_shift = bbox_shift
         data_preparation = inference_config[self.avatar_id]["preparation"]
         video_path = inference_config[self.avatar_id]["video_path"]
         bbox_shift = inference_config[self.avatar_id]["bbox_shift"]
+        self.avatar_id = avatar_id
+        self.video_path = video_path
+        self.bbox_shift = bbox_shift
+        
         # # get avatar_id
         self.avatar = Avatar(
                 avatar_id = avatar_id, 
@@ -184,7 +185,6 @@ class InferenceExecutor:
         # else:
         #     logger.error("Models load failed.")
         #     sys.exit(1)
-        # self.chat = chat
 
     # def run_block_simple_video_inference_step(self, texts:str,  
     #                                           spk: Optional[str] = None, source: str = "local", custom_path: str = ""):
@@ -263,6 +263,5 @@ if __name__ == "__main__":
     inference_config = OmegaConf.load(args.inference_config)
     print(inference_config)
 
-    ie = InferenceExecutor(0, 
-                                    inference_config)
+    ie = InferenceExecutor(0,inference_config, args.batch_size)
     ie.run_block_simple_video_inference_step("this is a test")
