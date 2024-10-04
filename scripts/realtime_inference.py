@@ -339,14 +339,10 @@ class Avatar:
             # Close the queue and sub-thread after all tasks are completed
             process_thread.join()
             
-            if args.skip_save_images is True:
-                print('Total process time of {} frames without saving images = {}s'.format(
-                            video_num,
-                            time.time()-start_time))
-            else:
-                print('Total process time of {} frames including saving images = {}s'.format(
-                            video_num,
-                            time.time()-start_time))
+
+            print('Total process time of {} frames including saving images = {}s'.format(
+                        video_num,
+                        time.time()-start_time))
                 
             # generate final result frames from video and audio
             # TODO: stream chunk by chunk
