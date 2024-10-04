@@ -102,7 +102,7 @@ async def stream_video(request: Request):
 # The main entry point
 def main():
     # Run the Uvicorn server with FastAPI app
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("scripts.server:app", host="0.0.0.0", port=8000, reload=True)
 
 # If the script is run directly, invoke the main function
 if __name__ == "__main__":
