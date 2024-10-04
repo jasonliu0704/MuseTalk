@@ -212,11 +212,6 @@ class InferenceExecutor:
 
         #chat tts
         logger.info("Text input: %s", str(texts))
-        
-        if spk is None:
-            spk = self.chat.sample_random_speaker()
-        logger.info("Use speaker:")
-        print(spk)
 
         logger.info("Start inference.")
         wavs_gen  = chattts_infer(texts)
