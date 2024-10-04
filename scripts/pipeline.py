@@ -66,7 +66,7 @@ logger = logging.getLogger(__name__)
 
 
 chattts_service_host = os.environ.get("CHATTTS_SERVICE_HOST", "localhost")
-chattts_service_port = os.environ.get("CHATTTS_SERVICE_PORT", "8000")
+chattts_service_port = os.environ.get("CHATTTS_SERVICE_PORT", "8001")
 
 CHATTTS_URL = f"http://{chattts_service_host}:{chattts_service_port}/generate_voice_stream"
 
