@@ -217,7 +217,7 @@ class InferenceExecutor:
         wavs_gen  = chattts_infer(texts)
         for index, wav in enumerate(wavs_gen):
             print("Inferring: ", index)
-            yield self.avatar.streaming_inference(wav, 
+            yield self.avatar.streaming_inference(np.frombuffer(wav, dtype=np.float32), 
                         "texts--" + str(index), 
                         args.fps,
                         args.skip_save_images)
