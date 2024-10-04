@@ -218,7 +218,7 @@ class InferenceExecutor:
         for index, wav in enumerate(wavs_gen):
             print("Inferring: ", index)
             yield self.avatar.streaming_inference(wav, 
-                        "texts--" + index, 
+                        "texts--" + str(index), 
                         args.fps,
                         args.skip_save_images)
 
