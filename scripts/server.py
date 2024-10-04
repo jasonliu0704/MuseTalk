@@ -24,7 +24,7 @@ app.add_middleware(
 inference_config = OmegaConf.load("configs/inference/realtime.yaml")
 print(inference_config)
 
-inference_executor = InferenceExecutor(0,inference_config, 1)
+inference_executor = InferenceExecutor("avator_1",inference_config, 1)
 
 
 def get_video_stream(file_path: str, start: int = 0, end: int = None) -> Iterator[bytes]:
