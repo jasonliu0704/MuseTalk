@@ -155,9 +155,9 @@ class InferenceExecutor:
     def __init__(self, avatar_id, inference_config:dict, batch_size:int,
                  source: str = "local",
     custom_path: str = "", stream: bool = True):
-        data_preparation = inference_config[self.avatar_id]["preparation"]
-        video_path = inference_config[self.avatar_id]["video_path"]
-        bbox_shift = inference_config[self.avatar_id]["bbox_shift"]
+        data_preparation = inference_config[avatar_id]["preparation"]
+        video_path = inference_config[avatar_id]["video_path"]
+        bbox_shift = inference_config[avatar_id]["bbox_shift"]
         self.avatar_id = avatar_id
         self.video_path = video_path
         self.bbox_shift = bbox_shift
