@@ -263,7 +263,7 @@ if __name__ == "__main__":
     inference_config = OmegaConf.load(args.inference_config)
     print(inference_config)
 
-    ie = InferenceExecutor(0,inference_config, args.batch_size)
+    ie = InferenceExecutor("avator_1",inference_config, args.batch_size)
     text_input = "this is a test"
     output_directory = "inference_results"
     os.makedirs(output_directory, exist_ok=True)
