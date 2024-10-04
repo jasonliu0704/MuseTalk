@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        video {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Streamed Video Player</h1>
+    <video id="videoPlayer" width="800" height="450" controls>
+        <source src="http://localhost:8000/chat" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        // Optionally, you can add JavaScript to handle additional functionalities
+        const video = document.getElementById('videoPlayer');
+
+        // Example: Log when the video starts playing
+        video.addEventListener('play', () => {
+            console.log('Video started playing');
+        });
+
+        // Example: Handle errors
+        video.addEventListener('error', (e) => {
+            console.error('Error playing video:', e);
+            alert('Failed to load the video. Please try again later.');
+        });
+    </script>
+</body>
+</html>

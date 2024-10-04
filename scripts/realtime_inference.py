@@ -16,6 +16,7 @@ from musetalk.utils.blending import get_image,get_image_prepare_material,get_ima
 from musetalk.utils.utils import load_all_model
 import shutil
 
+from ffmpeg_util import combine_audio_video
 import threading
 import queue
 
@@ -191,7 +192,8 @@ class Avatar:
     def process_frames(self, 
                        res_frame_queue,
                        video_len,
-                       skip_save_images):
+                       skip_save_images,
+                       combined_res_frame_queue=None):
         print(video_len)
         while True:
             if self.idx>=video_len-1:
@@ -218,6 +220,10 @@ class Avatar:
                 cv2.imwrite(f"{self.avatar_path}/tmp/{str(self.idx).zfill(8)}.png",combine_frame)
             self.idx = self.idx + 1
 
+            if combined_res_frame_queue:
+                combined_res_frame_queue.put(combine_frame)
+    
+    
     def inference(self, 
                   audio_path, 
                   out_vid_name, 
@@ -284,8 +290,92 @@ class Avatar:
             shutil.rmtree(f"{self.avatar_path}/tmp")
             print(f"result is save to {output_vid}")
         print("\n")
-       
+    
+    # this inference take in one chunk at a time
+    def streaming_inference(self, 
+                    wav_chunk, 
+                    out_vid_name, 
+                    fps,
+                    skip_save_images):
+            os.makedirs(self.avatar_path+'/tmp',exist_ok =True)   
+            print("start inference")
+            ############################################## extract audio feature ##############################################
+            start_time = time.time()
+            
+            #  audio: Union[str, np.ndarray, torch.Tensor]
+            # The path to the audio file to open, or the audio waveform
+            whisper_feature = audio_processor.audio2feat(wav_chunk)
+            whisper_chunks = audio_processor.feature2chunks(feature_array=whisper_feature,fps=fps)
+            print(f"processing audio:{audio_path} costs {(time.time() - start_time) * 1000}ms")
+            ############################################## inference batch by batch ##############################################
+            video_num = len(whisper_chunks)   
+            res_frame_queue = queue.Queue()
+            combined_res_frame_queue = queue.Queue()
+            self.idx = 0
+            # # Create a sub-thread and start it
+            process_thread = threading.Thread(target=self.process_frames, args=(res_frame_queue, video_num, 
+                                                                                skip_save_images, combined_res_frame_queue))
+            process_thread.start()
 
+            gen = datagen(whisper_chunks,
+                        self.input_latent_list_cycle, 
+                        self.batch_size)
+            start_time = time.time()
+            res_frame_list = []
+            
+            for i, (whisper_batch,latent_batch) in enumerate(tqdm(gen,total=int(np.ceil(float(video_num)/self.batch_size)))):
+                audio_feature_batch = torch.from_numpy(whisper_batch)
+                audio_feature_batch = audio_feature_batch.to(device=unet.device,
+                                                            dtype=unet.model.dtype)
+                audio_feature_batch = pe(audio_feature_batch)
+                latent_batch = latent_batch.to(dtype=unet.model.dtype)
+
+                pred_latents = unet.model(latent_batch, 
+                                        timesteps, 
+                                        encoder_hidden_states=audio_feature_batch).sample
+                recon = vae.decode_latents(pred_latents)
+                for res_frame in recon:
+                    res_frame_queue.put(res_frame)
+            # Close the queue and sub-thread after all tasks are completed
+            process_thread.join()
+            
+            if args.skip_save_images is True:
+                print('Total process time of {} frames without saving images = {}s'.format(
+                            video_num,
+                            time.time()-start_time))
+            else:
+                print('Total process time of {} frames including saving images = {}s'.format(
+                            video_num,
+                            time.time()-start_time))
+                
+            # generate final result frames from video and audio
+            # TODO: stream chunk by chunk
+            # for i, audio_chunk in enumerate(tqdm(whisper_chunks, total=int(np.ceil(float(video_num)/self.batch_size)))):
+            #     item = combined_res_frame_queue.get()
+            #     combine_audio_video()
+            combined_video_frames = []
+            while not combined_res_frame_queue.empty():
+                item = combined_res_frame_queue.get(block=True, timeout=1)
+                combined_video_frames.append(item)
+            return combine_audio_video(wav_chunk, combined_video_frames)
+                
+
+            # if out_vid_name is not None and args.skip_save_images is False: 
+            #     # optional
+            #     cmd_img2video = f"ffmpeg -y -v warning -r {fps} -f image2 -i {self.avatar_path}/tmp/%08d.png -vcodec libx264 -vf format=rgb24,scale=out_color_matrix=bt709,format=yuv420p -crf 18 {self.avatar_path}/temp.mp4"
+            #     print(cmd_img2video)
+            #     os.system(cmd_img2video)
+
+            #     output_vid = os.path.join(self.video_out_path, out_vid_name+".mp4") # on
+            #     cmd_combine_audio = f"ffmpeg -y -v warning -i {audio_path} -i {self.avatar_path}/temp.mp4 {output_vid}"
+            #     print(cmd_combine_audio)
+            #     os.system(cmd_combine_audio)
+
+            #     os.remove(f"{self.avatar_path}/temp.mp4")
+            #     shutil.rmtree(f"{self.avatar_path}/tmp")
+            #     print(f"result is save to {output_vid}")
+            # print("\n")
+       
 if __name__ == "__main__":
     '''
     This script is used to simulate online chatting and applies necessary pre-processing such as face detection and face parsing in advance. During online chatting, only UNet and the VAE decoder are involved, which makes MuseTalk real-time.
