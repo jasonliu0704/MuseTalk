@@ -14,7 +14,7 @@ t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 frequency = 440  # Hz
 
 # combine audio and video frame into a mixture
-def combine_audio_video(wav_chunk, video_frames, fps):
+def combine_audio_video(wav_chunk, video_frames, fps=30):
     # Generate a sequence of image frames (e.g., 30 frames for 1 second of video at 30 fps)
     frame_width, frame_height = 640, 480
     num_frames = len(video_frames)
