@@ -217,7 +217,8 @@ class InferenceExecutor:
         wavs_gen  = chattts_infer(texts)
         for index, wav in enumerate(wavs_gen):
             print("Inferring: ", index)
-            yield self.avatar.streaming_inference(np.frombuffer(wav, dtype=np.float32), 
+            wav_norm = np.frombuffer(wav, dtype=np.float32) / 2147483648.0  # Use 2147483648.0 to include the negative range
+            yield self.avatar.streaming_inference(wav_norm, 
                         "texts--" + str(index), 
                         args.fps,
                         args.skip_save_images)

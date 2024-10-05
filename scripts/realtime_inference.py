@@ -353,7 +353,7 @@ class Avatar:
             while not combined_res_frame_queue.empty():
                 item = combined_res_frame_queue.get(block=True, timeout=1)
                 combined_video_frames.append(item)
-            return combine_audio_video(wav_chunk, combined_video_frames)
+            return combine_audio_video(wav_chunk, combined_video_frames, fps)
                 
 
             # if out_vid_name is not None and args.skip_save_images is False: 
