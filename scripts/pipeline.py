@@ -225,7 +225,7 @@ class InferenceExecutor:
             # if audio.dtype != np.float32:
             audio = np.frombuffer(audio, dtype=np.float32)
             # Normalize to [-1.0, 1.0]
-            max_abs_value = max(abs(np.iinfo(audio.dtype).min), abs(np.iinfo(audio.dtype).max))
+            max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
             if max_abs_value == 0: 
                 max_abs_value = 1 # divide by zero error
             audio = audio / max_abs_value
