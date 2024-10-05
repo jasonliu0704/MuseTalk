@@ -223,7 +223,7 @@ class InferenceExecutor:
 
             # Convert to float32 and normalize if necessary
             # if audio.dtype != np.float32:
-            audio = audio.astype(np.float32)
+            audio = np.frombuffer(audio, dtype=np.float32)
             # Normalize to [-1.0, 1.0]
             max_abs_value = max(abs(np.iinfo(audio.dtype).min), abs(np.iinfo(audio.dtype).max))
             if max_abs_value == 0: 
@@ -244,8 +244,7 @@ class InferenceExecutor:
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
             
-            wav_norm = np.frombuffer(audio, dtype=np.float32)
-            yield self.avatar.streaming_inference(wav_norm, 
+            yield self.avatar.streaming_inference(audio, 
                         "texts--" + str(index), 
                         args.fps,
                         args.skip_save_images)
