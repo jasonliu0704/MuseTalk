@@ -79,6 +79,19 @@ def combine_audio_video(wav_chunk, video_frames, fps=30):
 
     # Ensure wav_chunk is a 1D numpy array (mono)
     audio = wav_chunk.flatten()
+    # Calculate total expected audio samples
+    total_video_duration = num_frames / fps  # in seconds
+    expected_audio_samples = int(sample_rate * total_video_duration)
+        # Check if audio length is sufficient
+    if len(audio) < expected_audio_samples:
+        padding_needed = expected_audio_samples - len(audio)
+        print(f"Audio is shorter than expected by {padding_needed} samples. Padding audio.")
+        audio = np.pad(audio, (0, padding_needed), 'constant')
+    elif len(audio) > expected_audio_samples:
+        print(f"Audio is longer than expected. Truncating audio.")
+        audio = audio[:expected_audio_samples]
+
+    print(f"Adjusted audio length: {len(audio)} samples")
 
     # Write audio frames to the container
     for i in range(0, len(audio), samples_per_frame):
