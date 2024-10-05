@@ -222,13 +222,13 @@ class InferenceExecutor:
                 audio = audio.cpu().numpy()
 
             # Convert to float32 and normalize if necessary
-            if audio.dtype != np.float32:
-                audio = audio.astype(np.float32)
-                # Normalize to [-1.0, 1.0]
-                max_abs_value = max(abs(np.iinfo(audio.dtype).min), abs(np.iinfo(audio.dtype).max))
-                if max_abs_value == 0: 
-                    max_abs_value = 1 # divide by zero error
-                audio = audio / max_abs_value
+            # if audio.dtype != np.float32:
+            audio = audio.astype(np.float32)
+            # Normalize to [-1.0, 1.0]
+            max_abs_value = max(abs(np.iinfo(audio.dtype).min), abs(np.iinfo(audio.dtype).max))
+            if max_abs_value == 0: 
+                max_abs_value = 1 # divide by zero error
+            audio = audio / max_abs_value
 
             # Check for NaN or Inf
             # assert not np.isnan(audio).any(), "Audio contains NaN values."
