@@ -76,7 +76,7 @@ def chattts_infer(text:str):
         "text": [
             text
         ],
-        "stream": True,
+        "stream": False,
         "lang": None,
         "skip_refine_text": True,
         "refine_text_only": False,
@@ -286,7 +286,7 @@ if __name__ == "__main__":
     print(inference_config)
 
     ie = InferenceExecutor("avator_1",inference_config, args.batch_size)
-    text_input = "this is a test"
+    text_input = "'I will never yield': Trump delivers defiant speech at site of his attempted assassination"
     output_directory = "inference_results"
     os.makedirs(output_directory, exist_ok=True)
 
