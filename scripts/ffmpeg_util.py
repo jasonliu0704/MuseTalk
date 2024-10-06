@@ -14,10 +14,11 @@ t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 frequency = 440  # Hz
 
 # combine audio and video frame into a mixture
-def combine_audio_video(wav_chunk, video_frames, fps=30):
+def combine_audio_video(wav_chunk, video_frames, fps=30, save=False):
     # Generate a sequence of image frames (e.g., 30 frames for 1 second of video at 30 fps)
     frame_width, frame_height = 640, 480
     num_frames = len(video_frames)
+    print(f"number of video frames: {num_frames}")
 
     # Create an in-memory bytes buffer
     output_buffer = io.BytesIO()
@@ -82,7 +83,7 @@ def combine_audio_video(wav_chunk, video_frames, fps=30):
     # Calculate total expected audio samples
     total_video_duration = num_frames / fps  # in seconds
     expected_audio_samples = int(sample_rate * total_video_duration)
-        # Check if audio length is sufficient
+    # Check if audio length is sufficient
     if len(audio) < expected_audio_samples:
         padding_needed = expected_audio_samples - len(audio)
         print(f"Audio is shorter than expected by {padding_needed} samples. Padding audio.")
@@ -123,8 +124,9 @@ def combine_audio_video(wav_chunk, video_frames, fps=30):
     mp4_data = output_buffer.read()
 
     # Optionally, save the MP4 data to a file to verify the output
-    # with open('output_video.mp4', 'wb') as f:
-    #     f.write(mp4_data)
+    if save:
+        with open('output_video.mp4', 'wb') as f:
+            f.write(mp4_data)
 
     print("MP4 video has been created in memory and saved as 'output_video.mp4'.")
 
@@ -206,4 +208,4 @@ if __name__ == "__main__":
         cv2.putText(img, f"Frame {i+1}", (50, frame_height // 2), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 3)
         frames.append(img)
 
-    combine_audio_video(audio_array, frames, fps)
+    combine_audio_video(audio_array, frames, fps, True)
