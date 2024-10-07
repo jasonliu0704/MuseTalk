@@ -76,7 +76,7 @@ def chattts_infer(text:str):
         "text": [
             text
         ],
-        "stream": False,
+        "stream": True,
         "lang": None,
         "skip_refine_text": True,
         "refine_text_only": False,
