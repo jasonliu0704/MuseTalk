@@ -186,23 +186,23 @@ class InferenceExecutor:
         #     logger.error("Models load failed.")
         #     sys.exit(1)
 
-    # def run_block_simple_video_inference_step(self, texts:str,  
-    #                                           spk: Optional[str] = None, source: str = "local", custom_path: str = ""):
+    def run_block_simple_video_inference_step(self, texts:str,  
+                                              spk: Optional[str] = None, source: str = "local", custom_path: str = ""):
         
-    #     #chat tts
-    #     logger.info("Text input: %s", str(texts))
+        #chat tts
+        logger.info("Text input: %s", str(texts))
         
 
-    #     logger.info("Start inference.")
-    #     wavs = self.chat.infer(texts)
+        logger.info("Start inference.")
+        wavs = self.chat.infer(texts)
 
-    #     logger.info("Inference completed.")
-    #     stream = False
-    #     self.avatar.inference(wavs, 
-    #                         "texts--", 
-    #                         args.fps,
-    #                         args.skip_save_images)
-    #     logger.info("run_block_simple_video_inference_step done!!!")
+        logger.info("Inference completed.")
+        stream = False
+        self.avatar.inference(wavs, 
+                            "texts--", 
+                            args.fps,
+                            args.skip_save_images)
+        logger.info("run_block_simple_video_inference_step done!!!")
 
 
 
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     os.makedirs(output_directory, exist_ok=True)
 
     # ie.run_simple_video_inference_step("this is a test")
-    for index, result in enumerate(ie.run_simple_video_inference_step(text_input)):
+    for index, result in enumerate(ie.run_block_simple_video_inference_step(text_input)):
         # Save the result to a text file for demonstration purposes
         output_path = os.path.join(output_directory, f"frame_result_{index}.mp4")
         with open(output_path, "wb") as f:
