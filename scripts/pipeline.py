@@ -197,6 +197,9 @@ class InferenceExecutor:
         wavs_gen  = chattts_infer(texts)
         wav_result = None
         for gen in wavs_gen:
+            print(f"Type of audio before np.frombuffer: {type(gen)}")
+            print(f"Length of audio buffer: {len(gen)} bytes")
+
             if wav_result is None:
                 wav_result = gen
             else:
