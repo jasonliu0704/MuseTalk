@@ -200,7 +200,7 @@ class InferenceExecutor:
             if wav_result is None:
                 wav_result = gen
             else:
-                wave_result = np.concatenate((wave_result,  np.frombuffer(gen, dtype=np.float32)))
+                wav_result = np.concatenate((wav_result,  np.frombuffer(gen, dtype=np.float32)))
         
         # yield self.avatar.streaming_inference(wave_result, 
         #                 "texts--" + str(0), 
@@ -208,7 +208,7 @@ class InferenceExecutor:
         #                 args.skip_save_images)
 
         logger.info("Inference completed.")
-        self.avatar.inference(wave_result, 
+        self.avatar.inference(wav_result, 
                             "texts--", 
                             args.fps,
                             args.skip_save_images)
