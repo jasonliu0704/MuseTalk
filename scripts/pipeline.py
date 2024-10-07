@@ -195,9 +195,12 @@ class InferenceExecutor:
 
         logger.info("Start inference.")
         wavs_gen  = chattts_infer(texts)
-        wav_result = np.asarray()
+        wav_result = None
         for gen in wavs_gen:
-            wave_result = np.concatenate((wave_result,  np.frombuffer(gen, dtype=np.float32)))
+            if wav_result is None:
+                wav_result = gen
+            else:
+                wave_result = np.concatenate((wave_result,  np.frombuffer(gen, dtype=np.float32)))
         
         # yield self.avatar.streaming_inference(wave_result, 
         #                 "texts--" + str(0), 
