@@ -203,7 +203,7 @@ class InferenceExecutor:
             if wav_result is None:
                 wav_result = gen
             else:
-                wav_result = np.concatenate((wav_result,  np.frombuffer(gen, dtype=np.float32)))
+                wav_result = np.concatenate((wav_result,  np.frombuffer(gen, dtype=np.int16)))
         
         # yield self.avatar.streaming_inference(wave_result, 
         #                 "texts--" + str(0), 
