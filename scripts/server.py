@@ -71,7 +71,7 @@ async def stream_video_live(request: Request):
     )
 
 @app.get("/chat_offline")
-async def stream_video_live(request: Request):
+async def stream_video_offline(request: Request):
     # Manually read the body as a JSON object
     body_bytes = await request.body()
     if not body_bytes:
@@ -115,7 +115,7 @@ async def stream_video_live(request: Request):
         )
 
 @app.get("/chat_test")
-async def stream_video_chat(request: Request):
+async def stream_video_chat_test(request: Request):
     file_path = "../data/video/yongen.mp4"
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Video not found")
