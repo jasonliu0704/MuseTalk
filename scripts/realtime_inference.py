@@ -266,7 +266,7 @@ class Avatar:
         # Close the queue and sub-thread after all tasks are completed
         process_thread.join()
         
-        if args.skip_save_images is True:
+        if skip_save_images is True:
             print('Total process time of {} frames without saving images = {}s'.format(
                         video_num,
                         time.time()-start_time))
@@ -275,7 +275,7 @@ class Avatar:
                         video_num,
                         time.time()-start_time))
 
-        if out_vid_name is not None and args.skip_save_images is False: 
+        if out_vid_name is not None and skip_save_images is False: 
             # optional
             cmd_img2video = f"ffmpeg -y -v warning -r {fps} -f image2 -i {self.avatar_path}/tmp/%08d.png -vcodec libx264 -vf format=rgb24,scale=out_color_matrix=bt709,format=yuv420p -crf 18 {self.avatar_path}/temp.mp4"
             print(cmd_img2video)
