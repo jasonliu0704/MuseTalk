@@ -22,6 +22,7 @@ import os
 import zipfile
 from io import BytesIO
 import requests
+import uuid
 
 # from ChatTTS.tools.audio import pcm_arr_to_mp3_view
 # from ChatTTS.tools.logger import get_logger
@@ -70,13 +71,13 @@ chattts_service_port = os.environ.get("CHATTTS_SERVICE_PORT", "8001")
 
 CHATTTS_URL = f"http://{chattts_service_host}:{chattts_service_port}/generate_voice_stream"
 
-def chattts_infer(text:str):
+def chattts_infer(text:str, stream=False):
     # main infer params
     body = {
         "text": [
             text
         ],
-        "stream": True,
+        "stream": stream,
         "lang": None,
         "skip_refine_text": True,
         "refine_text_only": False,
@@ -150,6 +151,69 @@ def chattts_infer(text:str):
         print(f"An error occurred: {err}")          # Other errors
 
 
+def chattts_infer_to_file(text:str, job_id:str):
+    # main infer params
+    body = {
+        "text": [
+            text
+        ],
+        "stream": False,
+        "lang": None,
+        "skip_refine_text": True,
+        "refine_text_only": False,
+        "use_decoder": True,
+        "audio_seed": 12345678,
+        "text_seed": 87654321,
+        "do_text_normalization": True,
+        "do_homophone_replacement": False,
+    }
+
+    # refine text params
+    params_refine_text = {
+        "prompt": "",
+        "top_P": 0.7,
+        "top_K": 20,
+        "temperature": 0.7,
+        "repetition_penalty": 1,
+        "max_new_token": 384,
+        "min_new_token": 0,
+        "show_tqdm": True,
+        "ensure_non_empty": True,
+        "stream_batch": 24,
+    }
+    body["params_refine_text"] = params_refine_text
+
+    # infer code params
+    params_infer_code = {
+        "prompt": "[speed_5]",
+        "top_P": 0.1,
+        "top_K": 20,
+        "temperature": 0.3,
+        "repetition_penalty": 1.05,
+        "max_new_token": 2048,
+        "min_new_token": 0,
+        "show_tqdm": True,
+        "ensure_non_empty": True,
+        "stream_batch": True,
+        "spk_emb": None,
+    }
+    body["params_infer_code"] = params_infer_code
+
+    try:
+        response = requests.post(CHATTTS_URL, json=body)
+        response.raise_for_status()
+        with zipfile.ZipFile(BytesIO(response.content), "r") as zip_ref:
+            # save files for each request in a different folder
+            dt = datetime.datetime.now()
+            # ts = int(dt.timestamp())
+            tgt = f"./output/{job_id}/"
+            os.makedirs(tgt, 0o755)
+            zip_ref.extractall(tgt)
+            print("Extracted files into", tgt)
+
+    except requests.exceptions.RequestException as e:
+        print(f"Request Error: {e}")
+
 @torch.no_grad() 
 class InferenceExecutor:
     def __init__(self, avatar_id, inference_config:dict, batch_size:int,
@@ -194,16 +258,11 @@ class InferenceExecutor:
         
 
         logger.info("Start inference.")
-        wavs_gen  = chattts_infer(texts)
-        wav_result = None
-        for gen in wavs_gen:
-            print(f"Type of audio before np.frombuffer: {type(gen)}")
-            print(f"Length of audio buffer: {len(gen)} bytes")
+        # Generate a UUID
+        uuid_str = str(uuid.uuid4())
+        chattts_infer_to_file(texts, uuid_str)
 
-            if wav_result is None:
-                wav_result = gen
-            else:
-                wav_result = np.concatenate((wav_result,  np.frombuffer(gen, dtype=np.int16)))
+
         
         # yield self.avatar.streaming_inference(wave_result, 
         #                 "texts--" + str(0), 
@@ -211,11 +270,14 @@ class InferenceExecutor:
         #                 args.skip_save_images)
 
         logger.info("Inference completed.")
-        self.avatar.inference(wav_result, 
-                            "texts--", 
+        output_loc = self.avatar.inference(f"./output/{uuid_str}/0.mp3", 
+                            "generated_video", 
                             args.fps,
-                            args.skip_save_images)
+                            False)
         logger.info("run_block_simple_video_inference_step done!!!")
+
+        # return generated file path
+        return output_loc
 
 
 

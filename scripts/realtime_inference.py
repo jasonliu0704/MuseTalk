@@ -289,6 +289,7 @@ class Avatar:
             os.remove(f"{self.avatar_path}/temp.mp4")
             shutil.rmtree(f"{self.avatar_path}/tmp")
             print(f"result is save to {output_vid}")
+            return output_vid
         print("\n")
     
     # this inference take in one chunk at a time
