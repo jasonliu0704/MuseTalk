@@ -272,7 +272,7 @@ class InferenceExecutor:
         logger.info("Inference completed.")
         output_loc = self.avatar.inference(f"./output/{uuid_str}/0.mp3", 
                             "generated_video", 
-                            args.fps,
+                            30,
                             False)
         logger.info("run_block_simple_video_inference_step done!!!")
 
