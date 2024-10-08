@@ -94,10 +94,10 @@ async def stream_video_chat_test(request: Request):
 async def stream_video_live(request: Request):
     # Manually read the body as a JSON object
     body_bytes = await request.body()
-    if not body_bytes:
-        return {"message": "Received JSON in chat_live request", "body": body_bytes}
-    body = json.loads(body_bytes)
-    input_text = body['question']
+    # if not body_bytes:
+    #     return {"message": "Received JSON in chat_live request", "body": body_bytes}
+    # body = json.loads(body_bytes)
+    input_text = "this is a test" #body['question']
     logger.info(f"stream_video_live input {input_text}")
 
     return StreamingResponse(
@@ -110,6 +110,7 @@ async def stream_video_offline(request: Request):
     # Manually read the body as a JSON object
     body_bytes = await request.body()
     if not body_bytes:
+        logger.error(f"no body: {body_bytes}")
         return {"message": "Received JSON in chat_live request", "body": body_bytes}
     body = json.loads(body_bytes)
     input_text = body['question']
@@ -117,7 +118,7 @@ async def stream_video_offline(request: Request):
 
     result_file_path = inference_executor.run_block_simple_video_inference_step(input_text)
     logger.info(f"result_file_path: {result_file_path}")
-    
+
     if not os.path.exists(result_file_path):
         logger.error("Video not found")
         raise HTTPException(status_code=404, detail="Video not found")
