@@ -35,7 +35,16 @@ app.add_middleware(
 inference_config = OmegaConf.load("configs/inference/realtime.yaml")
 print(inference_config)
 
-inference_executor = InferenceExecutor("avator_1",inference_config, 1)
+inference_executors = {
+  "trump": InferenceExecutor("trump",inference_config, 1),
+  "Portrait-of-Dr.-Gachet": InferenceExecutor("Portrait-of-Dr.-Gachet",inference_config, 1),
+  "yongen": InferenceExecutor("yongen",inference_config, 1),
+  "elon": InferenceExecutor("elon",inference_config, 1),
+  "boy_play_guitar": InferenceExecutor("boy_play_guitar",inference_config, 1),
+  "girl_play_guitar2": InferenceExecutor("girl_play_guitar2",inference_config, 1),
+  "seaside4": InferenceExecutor("seaside4",inference_config, 1),
+  "seaside_girl": InferenceExecutor("seaside_girl",inference_config, 1),
+}
 
 
 def get_video_stream(file_path: str, start: int = 0, end: int = None) -> Iterator[bytes]:
@@ -101,17 +110,17 @@ async def stream_video_live(request: Request):
     logger.info(f"stream_video_live input {input_text}")
 
     return StreamingResponse(
-        inference_executor.run_simple_video_inference_step(input_text),
+        inference_executors['elon'].run_simple_video_inference_step(input_text),
         media_type="video/mp4",
     )
 
 @app.get("/chat_offline")
-async def stream_video_offline(question: str = "this is a test"):
+async def stream_video_offline(id: str = "elon", question: str = "this is a test"):
 
     input_text = question
     logger.info(f"stream_video_live input {input_text}")
 
-    result_file_path = inference_executor.run_block_simple_video_inference_step(input_text)
+    result_file_path = inference_executors[id].run_block_simple_video_inference_step(input_text)
     logger.info(f"result_file_path: {result_file_path}")
 
     if not os.path.exists(result_file_path):
