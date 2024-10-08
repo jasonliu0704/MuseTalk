@@ -57,7 +57,7 @@ def get_video_stream(file_path: str, start: int = 0, end: int = None) -> Iterato
 
 @app.get("/test")
 async def stream_video_chat_test(request: Request):
-    file_path = "../data/video/yongen.mp4"
+    file_path = "data/video/yongen.mp4"
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Video not found")
 
