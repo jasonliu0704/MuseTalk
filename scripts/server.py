@@ -116,8 +116,10 @@ async def stream_video_offline(request: Request):
     logger.info(f"stream_video_live input {input_text}")
 
     result_file_path = inference_executor.run_block_simple_video_inference_step(input_text)
-
+    logger.info(f"result_file_path: {result_file_path}")
+    
     if not os.path.exists(result_file_path):
+        logger.error("Video not found")
         raise HTTPException(status_code=404, detail="Video not found")
 
     range_header = request.headers.get('range')
