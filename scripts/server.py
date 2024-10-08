@@ -106,14 +106,9 @@ async def stream_video_live(request: Request):
     )
 
 @app.get("/chat_offline")
-async def stream_video_offline(request: Request):
-    # Manually read the body as a JSON object
-    # body_bytes = await request.body()
-    # if not body_bytes:
-    #     logger.error(f"no body: {body_bytes}")
-    #     return {"message": "Received JSON in chat_live request", "body": body_bytes}
-    # body = json.loads(body_bytes)
-    input_text = "This is a test" #body['question']
+async def stream_video_offline(question: str = "this is a test"):
+
+    input_text = question
     logger.info(f"stream_video_live input {input_text}")
 
     result_file_path = inference_executor.run_block_simple_video_inference_step(input_text)
@@ -123,34 +118,11 @@ async def stream_video_offline(request: Request):
         logger.error("Video not found")
         raise HTTPException(status_code=404, detail="Video not found")
 
-    range_header = request.headers.get('range')
-    if range_header:
-        byte1, byte2 = 0, None
-        m = re.search(r'bytes=(\d+)-(\d*)', range_header)
-        if m:
-            g = m.groups()
-            byte1 = int(g[0])
-            if g[1]:
-                byte2 = int(g[1])
-        total_size = os.path.getsize(result_file_path)
-        byte2 = byte2 if byte2 is not None else total_size - 1
-        length = byte2 - byte1 + 1
-        headers = {
-            'Content-Range': f'bytes {byte1}-{byte2}/{total_size}',
-            'Accept-Ranges': 'bytes',
-            'Content-Length': str(length),
-            'Content-Type': 'video/mp4',
-        }
-        return StreamingResponse(
-            get_video_stream(result_file_path, byte1, byte2),
-            status_code=206,
-            headers=headers,
-        )
-    else:
-        return StreamingResponse(
-            get_video_stream(result_file_path),
-            media_type="video/mp4",
-        )
+    return StreamingResponse(
+                get_video_stream(result_file_path),
+                media_type="video/mp4",
+            )
+        
 
 
     
