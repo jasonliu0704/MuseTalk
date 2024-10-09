@@ -1,53 +1,53 @@
 trump:
- preparation: True
+ preparation: False
  bbox_shift: 5
  video_path: "data/video/gettyimages-2072404483-640_adpp.mp4"
  audio_clips:
      audio_0: "data/audio/yongen.wav"
 Portrait-of-Dr.-Gachet:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/Portrait-of-Dr.-Gachet.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 dufu:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/dufu.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 yongen:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/yongen.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 elon:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/elon.mov"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 boy_play_guitar:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/boy_play_guitar.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 girl_play_guitar2:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/girl_play_guitar2.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 seaside4:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/seaside4.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 seaside_girl:
-  preparation: True
+  preparation: False
   bbox_shift: 5
   video_path: "data/video/seaside_girl.mp4"
   audio_clips:
