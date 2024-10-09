@@ -25,7 +25,7 @@ yongen:
 elon:
   preparation: True
   bbox_shift: 5
-  video_path: "data/video/elon.mp4"
+  video_path: "data/video/elon.mov"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
 boy_play_guitar:
