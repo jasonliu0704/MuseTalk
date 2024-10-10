@@ -318,7 +318,7 @@ class InferenceExecutor:
             # Optionally, log statistics
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
-            
+            logger.debug(f"self.avatar.streaming_inference stream i: {index}")
             yield self.avatar.streaming_inference(audio, 
                         "texts--" + str(index), 
                         args.fps,
