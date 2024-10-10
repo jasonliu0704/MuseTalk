@@ -302,20 +302,20 @@ class InferenceExecutor:
             # if audio.dtype != np.float32:
             audio = np.frombuffer(audio, dtype=np.float32)
             # Normalize to [-1.0, 1.0]
-            # max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
-            # if max_abs_value == 0: 
-            #     max_abs_value = 1 # divide by zero error
-            # audio = audio / max_abs_value
+            max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
+            if max_abs_value == 0: 
+                max_abs_value = 1 # divide by zero error
+            audio = audio / max_abs_value
 
-            # # Check for NaN or Inf
-            # # assert not np.isnan(audio).any(), "Audio contains NaN values."
-            # # assert not np.isinf(audio).any(), "Audio contains Inf values."
-            # if np.isnan(audio).any():
-            #     print("Audio data contains NaN values.")
-            #     audio = np.nan_to_num(audio, nan=0.0)
-            # if np.isinf(audio).any():
-            #     print("Audio data contains Inf values.")
-            #     audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
+            # Check for NaN or Inf
+            # assert not np.isnan(audio).any(), "Audio contains NaN values."
+            # assert not np.isinf(audio).any(), "Audio contains Inf values."
+            if np.isnan(audio).any():
+                print("Audio data contains NaN values.")
+                audio = np.nan_to_num(audio, nan=0.0)
+            if np.isinf(audio).any():
+                print("Audio data contains Inf values.")
+                audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
 
             # Optionally, log statistics
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
