@@ -292,39 +292,39 @@ class InferenceExecutor:
 
         logger.info("Start inference.")
         wavs_gen  = chattts_infer(texts)
-        # for index, audio in enumerate(wavs_gen):
-        #     print("Inferring: ", index)
-        #     # Ensure audio is a NumPy array
-        #     if isinstance(audio, torch.Tensor):
-        #         audio = audio.cpu().numpy()
+        for index, audio in enumerate(wavs_gen):
+            print("Inferring: ", index)
+            # Ensure audio is a NumPy array
+            if isinstance(audio, torch.Tensor):
+                audio = audio.cpu().numpy()
 
-        #     # Convert to float32 and normalize if necessary
-        #     # if audio.dtype != np.float32:
-        #     audio = np.frombuffer(audio, dtype=np.float32)
-        #     # Normalize to [-1.0, 1.0]
-        #     max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
-        #     if max_abs_value == 0: 
-        #         max_abs_value = 1 # divide by zero error
-        #     audio = audio / max_abs_value
+            # Convert to float32 and normalize if necessary
+            # if audio.dtype != np.float32:
+            audio = np.frombuffer(audio, dtype=np.float32)
+            # Normalize to [-1.0, 1.0]
+            # max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
+            # if max_abs_value == 0: 
+            #     max_abs_value = 1 # divide by zero error
+            # audio = audio / max_abs_value
 
-        #     # Check for NaN or Inf
-        #     # assert not np.isnan(audio).any(), "Audio contains NaN values."
-        #     # assert not np.isinf(audio).any(), "Audio contains Inf values."
-        #     if np.isnan(audio).any():
-        #         print("Audio data contains NaN values.")
-        #         audio = np.nan_to_num(audio, nan=0.0)
-        #     if np.isinf(audio).any():
-        #         print("Audio data contains Inf values.")
-        #         audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
+            # # Check for NaN or Inf
+            # # assert not np.isnan(audio).any(), "Audio contains NaN values."
+            # # assert not np.isinf(audio).any(), "Audio contains Inf values."
+            # if np.isnan(audio).any():
+            #     print("Audio data contains NaN values.")
+            #     audio = np.nan_to_num(audio, nan=0.0)
+            # if np.isinf(audio).any():
+            #     print("Audio data contains Inf values.")
+            #     audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
 
-        #     # Optionally, log statistics
-        #     print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
+            # Optionally, log statistics
+            print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
-        #     logger.debug(f"self.avatar.streaming_inference stream i: {index}")
-        #     yield self.avatar.streaming_inference(audio, 
-        #                 "texts--" + str(index), 
-        #                 args.fps,
-        #                 args.skip_save_images)
+            logger.debug(f"self.avatar.streaming_inference stream i: {index}")
+            yield self.avatar.streaming_inference(audio, 
+                        "texts--" + str(index), 
+                        args.fps,
+                        args.skip_save_images)
 
         logger.info("Inference completed.")
                 
