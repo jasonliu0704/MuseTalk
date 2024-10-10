@@ -35,6 +35,8 @@ from .realtime_inference import Avatar
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
+# Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+logger.setLevel(logging.DEBUG)
 
 #chat tts
 # def load_normalizer(chat: ChatTTS.Chat):
