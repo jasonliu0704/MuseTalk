@@ -293,7 +293,7 @@ class InferenceExecutor:
         logger.info("Start inference.")
         wavs_gen  = chattts_infer(texts)
         for index, audio in enumerate(wavs_gen):
-            print("Inferring: ", index)
+            logger.info("Inferring: {index}")
             # Ensure audio is a NumPy array
             if isinstance(audio, torch.Tensor):
                 audio = audio.cpu().numpy()
