@@ -367,12 +367,12 @@ if __name__ == "__main__":
     output_directory = "inference_results"
     os.makedirs(output_directory, exist_ok=True)
 
-    ie.run_block_simple_video_inference_step("this is a test")
-    # for index, result in enumerate(ie.run_simple_video_inference_step(text_input)):
-    #     # Save the result to a text file for demonstration purposes
-    #     output_path = os.path.join(output_directory, f"frame_result_{index}.mp4")
-    #     with open(output_path, "wb") as f:
-    #         f.write(result)
-    #     logger.info(f"Saved result to {output_path}")
+    # ie.run_block_simple_video_inference_step("this is a test")
+    for index, result in enumerate(ie.run_simple_video_inference_step(text_input)):
+        # Save the result to a text file for demonstration purposes
+        output_path = os.path.join(output_directory, f"frame_result_{index}.mp4")
+        with open(output_path, "wb") as f:
+            f.write(result)
+        logger.info(f"Saved result to {output_path}")
 
     logger.info("Inference testing and saving completed.")
