@@ -323,6 +323,7 @@ class Avatar:
                         self.batch_size)
             start_time = time.time()
             res_frame_list = []
+            res_frame_queue_count = 0
             
             for i, (whisper_batch,latent_batch) in enumerate(tqdm(gen,total=int(np.ceil(float(video_num)/self.batch_size)))):
                 audio_feature_batch = torch.from_numpy(whisper_batch)
@@ -336,9 +337,11 @@ class Avatar:
                                         encoder_hidden_states=audio_feature_batch).sample
                 recon = vae.decode_latents(pred_latents)
                 for res_frame in recon:
+                    res_frame_queue_count += 1
                     res_frame_queue.put(res_frame)
             # Close the queue and sub-thread after all tasks are completed
             process_thread.join()
+            print(f"res_frame_queue_count: {res_frame_queue_count}")
             
 
             print('Total process time of {} frames including saving images = {}s'.format(
