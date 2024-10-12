@@ -144,7 +144,7 @@ def chattts_infer(text:str, stream=False):
             # Open the output file in binary write mode
                 
             # Iterate over the response in chunks
-            for chunk in response.iter_content(chunk_size=8192):
+            for chunk in response.iter_content(chunk_size=1920):
                 if chunk:  # Filter out keep-alive chunks
                     yield chunk
     except requests.exceptions.HTTPError as http_err:
