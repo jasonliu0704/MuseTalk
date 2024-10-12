@@ -347,7 +347,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--fps", 
                         type=int, 
-                        default=25,
+                        default=50,
     )
     parser.add_argument("--batch_size", 
                         type=int, 
