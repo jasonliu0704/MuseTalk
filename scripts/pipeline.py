@@ -294,6 +294,8 @@ class InferenceExecutor:
         wavs_gen  = chattts_infer(texts)
         for index, audio in enumerate(wavs_gen):
             logger.info("Inferring: {index}")
+            print(f"Length of audio: {len(audio)} bytes")
+
             # Ensure audio is a NumPy array
             if isinstance(audio, torch.Tensor):
                 audio = audio.cpu().numpy()

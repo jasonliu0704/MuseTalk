@@ -351,10 +351,12 @@ class Avatar:
             #     item = combined_res_frame_queue.get()
             #     combine_audio_video()
             combined_video_frames = []
+            print(f"combined_res_frame_queue size: {combined_res_frame_queue.qsize()}")
             while not combined_res_frame_queue.empty():
                 item = combined_res_frame_queue.get(block=True, timeout=1)
                 combined_video_frames.append(item)
-            return combine_audio_video(wav_chunk, combined_video_frames, fps)
+            print(f"combined_video_frames size: {len(combined_video_frames)}")
+            return combine_audio_video(wav_chunk, combined_video_frames, fps, save=True)
                 
 
             # if out_vid_name is not None and args.skip_save_images is False: 
