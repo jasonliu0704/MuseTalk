@@ -71,9 +71,9 @@ logger.setLevel(logging.DEBUG)
 chattts_service_host = os.environ.get("CHATTTS_SERVICE_HOST", "localhost")
 chattts_service_port = os.environ.get("CHATTTS_SERVICE_PORT", "8001")
 
-CHATTTS_URL = f"http://{chattts_service_host}:{chattts_service_port}/generate_voice_stream"
+CHATTTS_URL = f"http://{chattts_service_host}:{chattts_service_port}/generate_voice_chat_stream"
 
-def chattts_infer(text:str, stream=False):
+def chattts_infer(text:str, stream=True):
     # main infer params
     body = {
         "text": [
@@ -144,9 +144,37 @@ def chattts_infer(text:str, stream=False):
             # Open the output file in binary write mode
                 
             # Iterate over the response in chunks
-            for chunk in response.iter_content(chunk_size=1920):
+            # Initialize variables to keep track of the header and data
+            header = b''
+            data_size = 0
+
+            # Create an iterator for the response content
+            chunks = response.iter_content(chunk_size=4096)            
+            # Read the WAV header (44 bytes)
+            while len(header) < 44:
+                try:
+                    chunk = next(chunks)
+                except StopIteration:
+                    raise ValueError("Received incomplete WAV header.")
+
+                if chunk:
+                    header += chunk
+
+            # Split the header and the initial data
+            wav_header = header[:44]
+            remaining_header = header[44:]
+
+             # Write any remaining data from the header chunk
+            if remaining_header:
+                yield remaining_header
+                data_size += len(remaining_header)
+            
+            # The the rest of non header data
+            for chunk in chunks:
                 if chunk:  # Filter out keep-alive chunks
                     yield chunk
+                    data_size += len(chunk)
+            print(f"total data_size: {data_size}")        
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")  # HTTP error
     except Exception as err:
@@ -159,7 +187,7 @@ def chattts_infer_to_file(text:str, job_id:str):
         "text": [
             text
         ],
-        "stream": False,
+        "stream": True,
         "lang": None,
         "skip_refine_text": True,
         "refine_text_only": False,
