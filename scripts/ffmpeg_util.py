@@ -131,6 +131,8 @@ def combine_audio_video(wav_chunk, video_frames, fps=25, save=False):
     print("MP4 video has been created in memory and saved as 'output_video.mp4'.")
 
     return mp4_data
+
+
 def wav_to_numpy(mp3_file):
     # Use FFmpeg to decode MP3 to raw PCM data
     command = [
