@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the output directory and output video file name
-output_directory="your_output_directory"  # Change this to your actual output directory
+output_directory="inference_results"  # Change this to your actual output directory
 output_file="output_video.mp4"
 
 # Create a file list for ffmpeg
