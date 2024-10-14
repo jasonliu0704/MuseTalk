@@ -350,6 +350,8 @@ class InferenceExecutor:
             # Optionally, log statistics
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
+            with open(os.path.join("inference_results", f"audio_result_{index}.wav"), "wb") as af:
+                af.write(audio)
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
             yield self.avatar.streaming_inference(audio, 
                         "texts--" + str(index), 
