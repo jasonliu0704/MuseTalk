@@ -398,7 +398,7 @@ if __name__ == "__main__":
     os.makedirs(output_directory, exist_ok=True)
 
     # ie.run_block_simple_video_inference_step("this is a test")
-    with open(os.path.join(output_directory, "final_frame_result.mp4"), "wb") as f:
+    with open(os.path.join(output_directory, "final_frame_result.mp4"), "ab") as f:
             
         for index, result in enumerate(ie.run_simple_video_inference_step(text_input)):
             # Save the result to a text file for demonstration purposes
