@@ -347,7 +347,7 @@ class InferenceExecutor:
             # print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
             # Convert normalized audio back to int16 format for saving
-            audio_int16 = (audio * 32767).astype(np.int16)
+            # audio_int16 = (audio * 32767).astype(np.int16)
 
             # Save the audio chunk to a .wav file
             import wave
