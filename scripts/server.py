@@ -32,7 +32,7 @@ app.add_middleware(
 )
 
 # load inference config
-inference_config = OmegaConf.load("configs/inference/offline.yaml")
+inference_config = OmegaConf.load("configs/inference/realtime.yaml")
 print(inference_config)
 
 inference_executors = {
