@@ -322,6 +322,7 @@ class InferenceExecutor:
         for index, audio in enumerate(wavs_gen):
             logger.info("Inferring: {index}")
             print(f"Length of audio: {len(audio)} bytes")
+            raw_audio = audio
 
             # Ensure audio is a NumPy array
             if isinstance(audio, torch.Tensor):
@@ -356,10 +357,10 @@ class InferenceExecutor:
                 af.setnchannels(1)  # Mono audio
                 af.setsampwidth(2)  # 2 bytes per sample (16-bit audio)
                 af.setframerate(24000)  # Assuming a sample rate of 16kHz
-                af.writeframes(audio_int16.tobytes())
+                af.writeframes(raw_audio)
 
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
-            yield self.avatar.streaming_inference(audio, 
+            yield self.avatar.streaming_inference(raw_audio, 
                         "texts--" + str(index), 
                         args.fps,
                         args.skip_save_images)
