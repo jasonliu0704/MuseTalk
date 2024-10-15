@@ -100,13 +100,13 @@ async def stream_video_chat_test(request: Request):
         )
     
 @app.get("/chat_live")
-async def stream_video_live(request: Request):
+async def stream_video_live(request: Request,  question: str, id: str):
     # Manually read the body as a JSON object
-    body_bytes = await request.body()
-    if not body_bytes:
-        return {"message": "Received JSON in chat_live request", "body": body_bytes}
-    body = json.loads(body_bytes)
-    input_text = body['question']
+    # body_bytes = await request.body()
+    # if not body_bytes:
+    #     return {"message": "Received JSON in chat_live request", "body": body_bytes}
+    # body = json.loads(body_bytes)
+    input_text = question #body['question']
     logger.info(f"stream_video_live input {input_text}")
 
     return StreamingResponse(
