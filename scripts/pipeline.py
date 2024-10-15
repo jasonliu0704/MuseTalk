@@ -352,14 +352,14 @@ class InferenceExecutor:
             # audio_int16 = (audio * 32767).astype(np.int16)
 
             # Save the audio chunk to a .wav file
-            import wave
+            # import wave
 
-            output_path = os.path.join("inference_results", f"audio_result_{index}.wav")
-            with wave.open(output_path, 'wb') as af:
-                af.setnchannels(1)  # Mono audio
-                af.setsampwidth(2)  # 2 bytes per sample (16-bit audio)
-                af.setframerate(24000)  # Assuming a sample rate of 16kHz
-                af.writeframes(raw_audio)
+            # output_path = os.path.join("inference_results", f"audio_result_{index}.wav")
+            # with wave.open(output_path, 'wb') as af:
+            #     af.setnchannels(1)  # Mono audio
+            #     af.setsampwidth(2)  # 2 bytes per sample (16-bit audio)
+            #     af.setframerate(24000)  # Assuming a sample rate of 16kHz
+            #     af.writeframes(raw_audio)
 
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
             yield self.avatar.streaming_inference(audio, 
