@@ -330,10 +330,10 @@ class InferenceExecutor:
 
             # Convert to float32 and normalize if necessary
             audio = np.frombuffer(audio, dtype=np.float32)
-            max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
-            if max_abs_value == 0:
-                max_abs_value = 1  # divide by zero error
-            audio = audio / max_abs_value
+            # max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
+            # if max_abs_value == 0:
+            #     max_abs_value = 1  # divide by zero error
+            # audio = audio / max_abs_value
 
             # Check for NaN or Inf
             if np.isnan(audio).any():
