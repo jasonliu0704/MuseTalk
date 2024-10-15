@@ -313,13 +313,12 @@ class InferenceExecutor:
 
     # a single step of inferencing: simple avatar + voice inference
     # need to chunk the text input if you want to stream this
-    def run_simple_video_inference_step(self, texts:str,  spk: Optional[str] = None, source: str = "local", custom_path: str = ""):
-
-        #chat tts
+    def run_simple_video_inference_step(self, texts: str, spk: Optional[str] = None, source: str = "local", custom_path: str = ""):
+        # chat tts
         logger.info("Text input: %s", str(texts))
 
         logger.info("Start inference.")
-        wavs_gen  = chattts_infer(texts)
+        wavs_gen = chattts_infer(texts)
         for index, audio in enumerate(wavs_gen):
             logger.info("Inferring: {index}")
             print(f"Length of audio: {len(audio)} bytes")
@@ -329,17 +328,13 @@ class InferenceExecutor:
                 audio = audio.cpu().numpy()
 
             # Convert to float32 and normalize if necessary
-            # if audio.dtype != np.float32:
             audio = np.frombuffer(audio, dtype=np.float32)
-            # Normalize to [-1.0, 1.0]
             max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
-            if max_abs_value == 0: 
-                max_abs_value = 1 # divide by zero error
+            if max_abs_value == 0:
+                max_abs_value = 1  # divide by zero error
             audio = audio / max_abs_value
 
             # Check for NaN or Inf
-            # assert not np.isnan(audio).any(), "Audio contains NaN values."
-            # assert not np.isinf(audio).any(), "Audio contains Inf values."
             if np.isnan(audio).any():
                 print("Audio data contains NaN values.")
                 audio = np.nan_to_num(audio, nan=0.0)
@@ -350,14 +345,19 @@ class InferenceExecutor:
             # Optionally, log statistics
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
-            import wave
-            output_path = os.path.join("inference_results", f"audio_result_{index}.wav")
+            # Convert normalized audio back to int16 format for saving
+            audio_int16 = (audio * 32767).astype(np.int16)
 
+            # Save the audio chunk to a .wav file
+            import wave
+
+            output_path = os.path.join("inference_results", f"audio_result_{index}.wav")
             with wave.open(output_path, 'wb') as af:
                 af.setnchannels(1)  # Mono audio
                 af.setsampwidth(2)  # 2 bytes per sample (16-bit audio)
                 af.setframerate(16000)  # Assuming a sample rate of 16kHz
                 af.writeframes(audio_int16.tobytes())
+
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
             yield self.avatar.streaming_inference(audio, 
                         "texts--" + str(index), 
