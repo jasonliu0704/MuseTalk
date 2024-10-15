@@ -196,7 +196,7 @@ class Avatar:
                        combined_res_frame_queue=None):
         print(video_len)
         while True:
-            if self.idx>=video_len-1:
+            if self.idx>video_len-1:
                 break
             try:
                 start = time.time()
