@@ -200,7 +200,7 @@ if __name__ == "__main__":
 
     # Generate a sequence of image frames (e.g., 30 frames for 1 second of video at 30 fps)
     frame_width, frame_height = 640, 480
-    num_frames = 100
+    num_frames = 1000
     fps = 50
     frames = []
 
