@@ -344,7 +344,7 @@ class InferenceExecutor:
             #     audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
 
             # Optionally, log statistics
-            print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
+            # print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
 
             # Convert normalized audio back to int16 format for saving
             audio_int16 = (audio * 32767).astype(np.int16)
