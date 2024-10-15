@@ -149,7 +149,7 @@ def chattts_infer(text:str, stream=True):
             data_size = 0
 
             # Create an iterator for the response content
-            chunks = response.iter_content(chunk_size=65536)            
+            chunks = response.iter_content(chunk_size=262144)            
             # Read the WAV header (44 bytes)
             while len(header) < 44:
                 try:
@@ -363,7 +363,7 @@ class InferenceExecutor:
 
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
             yield self.avatar.streaming_inference(audio, 
-                        "texts--" + str(index), 
+                        "video--" + str(index), 
                         args.fps,
                         args.skip_save_images)
 

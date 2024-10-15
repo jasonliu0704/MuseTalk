@@ -14,7 +14,7 @@ duration = 1.0  # seconds
 # frequency = 440  # Hz
 
 # combine audio and video frame into a mixture
-def combine_audio_video(wav_chunk, video_frames, fps=25, save=False):
+def combine_audio_video(wav_chunk, video_frames, out_vid_name, fps=25, save=False):
     # Generate a sequence of image frames (e.g., 30 frames for 1 second of video at 30 fps)
     frame_width, frame_height = 640, 480
     num_frames = len(video_frames)
@@ -125,10 +125,10 @@ def combine_audio_video(wav_chunk, video_frames, fps=25, save=False):
 
     # Optionally, save the MP4 data to a file to verify the output
     if save:
-        with open('output_video.mp4', 'wb') as f:
+        with open(f'{out_vid_name}_output_video.mp4', 'wb') as f:
             f.write(mp4_data)
 
-    print("MP4 video has been created in memory and saved as 'output_video.mp4'.")
+    print(f"MP4 video has been created in memory and saved as '{out_vid_name}_output_video.mp4'.")
 
     return mp4_data
 
