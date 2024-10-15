@@ -101,6 +101,8 @@ def transcribe(
     seek = 0
     previous_seek_value = seek
     sample_skip = 3000 # 
+    
+    print(f"transcribe {num_frames} frames")
     with tqdm.tqdm(total=num_frames, unit='frames', disable=verbose is not False) as pbar:
         while seek < num_frames:
             # seek是开始的帧数
