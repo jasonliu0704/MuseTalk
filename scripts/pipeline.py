@@ -336,12 +336,12 @@ class InferenceExecutor:
             # audio = audio / max_abs_value
 
             # Check for NaN or Inf
-            if np.isnan(audio).any():
-                print("Audio data contains NaN values.")
-                audio = np.nan_to_num(audio, nan=0.0)
-            if np.isinf(audio).any():
-                print("Audio data contains Inf values.")
-                audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
+            # if np.isnan(audio).any():
+            #     print("Audio data contains NaN values.")
+            #     audio = np.nan_to_num(audio, nan=0.0)
+            # if np.isinf(audio).any():
+            #     print("Audio data contains Inf values.")
+            #     audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
 
             # Optionally, log statistics
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
