@@ -355,7 +355,7 @@ class InferenceExecutor:
             with wave.open(output_path, 'wb') as af:
                 af.setnchannels(1)  # Mono audio
                 af.setsampwidth(2)  # 2 bytes per sample (16-bit audio)
-                af.setframerate(16000)  # Assuming a sample rate of 16kHz
+                af.setframerate(24000)  # Assuming a sample rate of 16kHz
                 af.writeframes(audio_int16.tobytes())
 
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
