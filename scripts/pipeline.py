@@ -329,7 +329,7 @@ class InferenceExecutor:
                 audio = audio.cpu().numpy()
 
             # Convert to float32 and normalize if necessary
-            audio = np.frombuffer(audio, dtype=np.float32)
+            # audio = np.frombuffer(audio, dtype=np.float32)
             # max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
             # if max_abs_value == 0:
             #     max_abs_value = 1  # divide by zero error
