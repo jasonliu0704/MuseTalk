@@ -330,18 +330,18 @@ class InferenceExecutor:
 
             # Convert to float32 and normalize if necessary
             audio = np.frombuffer(audio, dtype=np.float32)
-            # max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
-            # if max_abs_value == 0:
-            #     max_abs_value = 1  # divide by zero error
-            # audio = audio / max_abs_value
+            max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
+            if max_abs_value == 0:
+                max_abs_value = 1  # divide by zero error
+            audio = audio / max_abs_value
 
             # Check for NaN or Inf
-            # if np.isnan(audio).any():
-            #     print("Audio data contains NaN values.")
-            #     audio = np.nan_to_num(audio, nan=0.0)
-            # if np.isinf(audio).any():
-            #     print("Audio data contains Inf values.")
-            #     audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
+            if np.isnan(audio).any():
+                print("Audio data contains NaN values.")
+                audio = np.nan_to_num(audio, nan=0.0)
+            if np.isinf(audio).any():
+                print("Audio data contains Inf values.")
+                audio = np.nan_to_num(audio, posinf=1.0, neginf=-1.0)
 
             # Optionally, log statistics
             print(f"Audio statistics - min: {audio.min()}, max: {audio.max()}, mean: {audio.mean()}")
@@ -360,7 +360,7 @@ class InferenceExecutor:
                 af.writeframes(raw_audio)
 
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
-            yield self.avatar.streaming_inference(raw_audio, 
+            yield self.avatar.streaming_inference(audio, 
                         "texts--" + str(index), 
                         args.fps,
                         args.skip_save_images)
