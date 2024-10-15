@@ -323,10 +323,11 @@ class InferenceExecutor:
             logger.info("Inferring: {index}")
             print(f"Length of audio: {len(audio)} bytes")
             raw_audio = audio
+            audio = np.frombuffer(audio, np.int16).flatten().astype(np.float32)
 
             # Ensure audio is a NumPy array
-            if isinstance(audio, torch.Tensor):
-                audio = audio.cpu().numpy()
+            # if isinstance(audio, torch.Tensor):
+            #     audio = audio.cpu().numpy()
 
             # Convert to float32 and normalize if necessary
             # audio = np.frombuffer(audio, dtype=np.float32)
