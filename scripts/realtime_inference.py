@@ -377,7 +377,7 @@ class Avatar:
             #     print(f"result is save to {output_vid}")
             # print("\n")
 
-            return combine_audio_video(wav_chunk, combined_video_frames, fps, out_vid_name, save=True)
+            return combine_audio_video(wav_chunk, combined_video_frames, out_vid_name, fps=fps, save=True)
 
        
 if __name__ == "__main__":
