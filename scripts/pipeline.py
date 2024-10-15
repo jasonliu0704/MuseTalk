@@ -364,8 +364,8 @@ class InferenceExecutor:
             logger.debug(f"self.avatar.streaming_inference stream i: {index}")
             yield self.avatar.streaming_inference(audio, 
                         "video--" + str(index), 
-                        args.fps,
-                        args.skip_save_images)
+                        50,
+                        True)
 
         logger.info("Inference completed.")
                 
