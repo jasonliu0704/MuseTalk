@@ -13,13 +13,13 @@ duration = 1.0  # seconds
 # t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 # frequency = 440  # Hz
 
-def normalize_audio(audio):
-    max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
-    if max_abs_value == 0:
-        max_abs_value = 1  # divide by zero error
-    audio = audio / max_abs_value
-    audio_int16 = (audio * 32767).astype(np.int16)
-    return audio_int16
+# def normalize_audio(audio):
+#     max_abs_value = max(abs(np.min(audio)), abs(np.max(audio)))
+#     if max_abs_value == 0:
+#         max_abs_value = 1  # divide by zero error
+#     audio = audio / max_abs_value
+#     audio_int16 = (audio * 32767).astype(np.int16)
+#     return audio
 
 # combine audio and video frame into a mixture
 def combine_audio_video(wav_chunk, video_frames, out_vid_name, fps=25, save=False):
@@ -86,8 +86,6 @@ def combine_audio_video(wav_chunk, video_frames, out_vid_name, fps=25, save=Fals
     # if packet:
     #     output_container.mux(packet)
 
-    # Normalize audio
-    wav_chunk = normalize_audio(wav_chunk)
     # Ensure wav_chunk is a 1D numpy array (mono)
     audio = wav_chunk.flatten()
     # Calculate total expected audio samples
