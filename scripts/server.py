@@ -99,6 +99,25 @@ async def stream_video_chat_test(request: Request):
             media_type="video/mp4",
         )
     
+def estimate_file_size(input_text: str) -> int:
+    """
+    Estimate the size of files based on the input text.
+    Each character in the input text corresponds to 4 KB in size.
+
+    Args:
+    input_text (str): The input text.
+
+    Returns:
+    int: The estimated size of the files in bytes.
+    """
+    # Define the size per character in bytes (4 KB = 4096 bytes)
+    size_per_character = 4096
+    
+    # Calculate the total size
+    total_size = len(input_text) * size_per_character
+    
+    return total_size
+
 @app.get("/chat_live")
 async def stream_video_live(request: Request,  question: str, id: str):
     # Manually read the body as a JSON object
@@ -108,10 +127,22 @@ async def stream_video_live(request: Request,  question: str, id: str):
     # body = json.loads(body_bytes)
     input_text = question #body['question']
     logger.info(f"stream_video_live input {input_text}")
+    total_size = estimate_file_size(input_text)
+
+
+    range_header = request.headers.get('range')
+    headers = {
+        'Content-Range': f'bytes {0}-{total_size}/{total_size}',
+        'Accept-Ranges': 'bytes',
+        'Content-Length': str(total_size),
+        'Content-Type': 'video/mp4',
+    }
 
     return StreamingResponse(
         inference_executors['elon'].run_simple_video_inference_step(input_text),
         media_type="video/mp4",
+        status_code=206,
+        headers=headers,
     )
 
 @app.get("/chat_offline")
