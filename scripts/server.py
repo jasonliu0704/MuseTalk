@@ -32,18 +32,21 @@ app.add_middleware(
 )
 
 # load inference config
-inference_config = OmegaConf.load("configs/inference/realtime.yaml")
+# inference_config = OmegaConf.load("configs/inference/realtime.yaml")
+inference_config = OmegaConf.load("configs/inference/test.yaml")
+
 print(inference_config)
 
 inference_executors = {
 #   "trump": InferenceExecutor("trump",inference_config, 1),
 #   "Portrait-of-Dr.-Gachet": InferenceExecutor("Portrait-of-Dr.-Gachet",inference_config, 1),
 #   "yongen": InferenceExecutor("yongen",inference_config, 1),
-  "elon": InferenceExecutor("elon",inference_config, 1),
+#   "elon": InferenceExecutor("elon",inference_config, 1),
 #   "boy_play_guitar": InferenceExecutor("boy_play_guitar",inference_config, 1),
 #   "girl_play_guitar2": InferenceExecutor("girl_play_guitar2",inference_config, 1),
 #   "seaside4": InferenceExecutor("seaside4",inference_config, 1),
 #   "seaside_girl": InferenceExecutor("seaside_girl",inference_config, 1),
+   "elon": InferenceExecutor("task_0",inference_config, 1),
 }
 
 
