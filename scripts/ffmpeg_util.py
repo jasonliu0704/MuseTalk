@@ -135,9 +135,9 @@ def combine_audio_video(wav_chunk, video_frames, out_vid_name, fps=25, save=Fals
     if save:
         with open(f'{out_vid_name}_output_video.mp4', 'wb') as f:
             f.write(mp4_data)
+        print(f"MP4 video has been created in memory and saved as '{out_vid_name}_output_video.mp4'.")
 
-    print(f"MP4 video has been created in memory and saved as '{out_vid_name}_output_video.mp4'.")
-
+    print(f"mp4_data size: {len(mp4_data)}")
     return mp4_data
 
 
