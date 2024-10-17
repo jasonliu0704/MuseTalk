@@ -172,7 +172,7 @@ async def stream_video_offline(id: str = "elon", question: str = "this is a test
 # The main entry point
 def main():
     # Run the Uvicorn server with FastAPI app
-    uvicorn.run("scripts.server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("scripts.server:app", host="0.0.0.0", port=8000, reload=False)
 
 # If the script is run directly, invoke the main function
 if __name__ == "__main__":
