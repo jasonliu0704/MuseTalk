@@ -111,7 +111,7 @@ def estimate_file_size(input_text: str) -> int:
     int: The estimated size of the files in bytes.
     """
     # Define the size per character in bytes (4 KB = 4096 bytes)
-    size_per_character = 4096
+    size_per_character = 4
     
     # Calculate the total size
     total_size = len(input_text) * size_per_character
@@ -127,7 +127,7 @@ async def stream_video_live(request: Request,  question: str, id: str):
     # body = json.loads(body_bytes)
     input_text = question #body['question']
     logger.info(f"stream_video_live input {input_text}")
-    total_size = estimate_file_size(input_text)
+    total_size = 3840 * 4 #estimate_file_size(input_text)
 
 
     range_header = request.headers.get('range')
