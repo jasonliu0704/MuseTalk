@@ -1,12 +1,12 @@
-trump:
- preparation: False
- bbox_shift: 5
- video_path: "data/video/gettyimages-2072404483-640_adpp.mp4"
- audio_clips:
-     audio_0: "data/audio/yongen.wav"
+# trump:
+#  preparation: False
+#  bbox_shift: 5
+#  video_path: "data/video/gettyimages-2072404483-640_adpp.mp4"
+#  audio_clips:
+#      audio_0: "data/audio/yongen.wav"
 elon:
   preparation: False
   bbox_shift: 5
-  video_path: "data/video/elon.mov"
+  video_path: "data/video/sun.mp4"
   audio_clips:
       audio_0: "data/audio/yongen.wav"
