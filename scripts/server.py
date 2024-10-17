@@ -36,7 +36,7 @@ inference_config = OmegaConf.load("configs/inference/realtime.yaml")
 print(inference_config)
 
 inference_executors = {
-  "trump": InferenceExecutor("trump",inference_config, 1),
+#   "trump": InferenceExecutor("trump",inference_config, 1),
 #   "Portrait-of-Dr.-Gachet": InferenceExecutor("Portrait-of-Dr.-Gachet",inference_config, 1),
 #   "yongen": InferenceExecutor("yongen",inference_config, 1),
   "elon": InferenceExecutor("elon",inference_config, 1),
