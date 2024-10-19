@@ -137,7 +137,7 @@ async def stream_video_live(request: Request,  question: str, id: str):
     headers = {
         'Content-Range': f'bytes {0}-{total_size}/{total_size}',
         'Accept-Ranges': 'bytes',
-        'Content-Length': str(total_size),
+        # 'Content-Length': str(total_size),
         'Content-Type': 'video/mp4',
     }
 
