@@ -130,7 +130,7 @@ async def stream_video_live(request: Request,  question: str, id: str):
     # body = json.loads(body_bytes)
     input_text = question #body['question']
     logger.info(f"stream_video_live input {input_text}")
-    total_size = 43520 #estimate_file_size(input_text)
+    total_size = 15104 #estimate_file_size(input_text)
 
 
     range_header = request.headers.get('range')
