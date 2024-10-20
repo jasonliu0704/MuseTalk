@@ -106,7 +106,7 @@ def estimate_file_size(input_text: str) -> int:
     """
     Estimate the size of files based on the input text.
     Each character in the input text corresponds to 4 KB in size.
-
+6 =
     Args:
     input_text (str): The input text.
 
