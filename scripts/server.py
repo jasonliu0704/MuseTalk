@@ -143,9 +143,9 @@ async def stream_video_live(request: Request,  question: str, id: str):
 
     return StreamingResponse(
         inference_executors['elon'].run_simple_video_inference_step(input_text),
-        media_type="video/mp4",
-        status_code=206,
-        headers=headers,
+        # media_type="video/mp4",
+        # status_code=206,
+        # headers=headers,
     )
 
 @app.get("/chat_offline")
