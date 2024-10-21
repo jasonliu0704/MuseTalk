@@ -149,7 +149,7 @@ def chattts_infer(text:str, stream=True):
             data_size = 0
 
             # Create an iterator for the response content
-            chunks = response.iter_content(chunk_size=1024*100)            
+            chunks = response.iter_content(chunk_size=1024*1024)            
             # Read the WAV header (44 bytes)
             while len(header) < 44:
                 try:
@@ -163,6 +163,7 @@ def chattts_infer(text:str, stream=True):
             # Split the header and the initial data
             # TODO: no header needed during transmission
             wav_header = header[:44]
+            yield wav_header
             remaining_header = header[44:]
 
              # Write any remaining data from the header chunk
