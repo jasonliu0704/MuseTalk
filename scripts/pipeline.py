@@ -163,7 +163,7 @@ def chattts_infer(text:str, stream=True):
             # Split the header and the initial data
             # TODO: no header needed during transmission
             wav_header = header[:44]
-            yield wav_header
+            # yield wav_header
             remaining_header = header[44:]
 
              # Write any remaining data from the header chunk
