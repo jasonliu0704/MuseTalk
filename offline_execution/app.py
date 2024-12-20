@@ -64,7 +64,7 @@ async def process_video(
     job_id = str(uuid.uuid4())
     logger.info(f"Starting new job {job_id}")
     logger.info(f"Request text: {text}")
-    logger.info(f"Input video filename: {video.filename}")
+    # logger.info(f"Input video filename: {video.filename}")
     
     input_path = UPLOAD_DIR / f"{job_id}_input.mp4"
     output_vid_name = f"{job_id}_output.mp4"
