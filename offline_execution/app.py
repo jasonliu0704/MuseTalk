@@ -11,6 +11,7 @@ import uuid
 from .client import tts
 from pydantic import BaseModel
 from .inference import inference
+import time
 
 class VideoRequest(BaseModel):
     text: str = "Hello, this is a default message"
@@ -46,6 +47,9 @@ async def process_video(
     request: VideoRequest,
     video: UploadFile = File(...)
 ):
+    start_time = time.time()
+    processing_times = {}
+    
     # Generate unique ID for this job
     job_id = str(uuid.uuid4())
     input_path = UPLOAD_DIR / f"{job_id}_input.mp4"
@@ -54,6 +58,7 @@ async def process_video(
     sound_output_path = OUTPUT_DIR / f"{job_id}_sound_output.wav"
     
     try:
+        file_save_start = time.time()
         if video:
             # Save uploaded file
             with open(input_path, "wb") as buffer:
@@ -63,26 +68,41 @@ async def process_video(
             if not DEFAULT_VIDEO.exists():
                 return {"error": "Default video not found"}
             shutil.copy(DEFAULT_VIDEO, input_path)
+        processing_times['file_save'] = time.time() - file_save_start
 
         # generate voice
+        tts_start = time.time()
         tts(request.text, tts_wav=sound_output_path)
+        processing_times['tts'] = time.time() - tts_start
         
-        # Run inference with direct parameters
+        # Run inference
+        inference_start = time.time()
         inference(
             video_path=str(input_path),
             audio_path=str(sound_output_path),
             result_dir=str(OUTPUT_DIR),
             output_vid_name=str(output_vid_name)
         )
+        processing_times['inference'] = time.time() - inference_start
+        
+        total_time = time.time() - start_time
+        processing_times['total'] = total_time
+        
+        print(f"Processing times:")
+        print(f"File save: {processing_times['file_save']:.2f}s")
+        print(f"TTS: {processing_times['tts']:.2f}s")
+        print(f"Inference: {processing_times['inference']:.2f}s")
+        print(f"Total time: {total_time:.2f}s")
         
         return FileResponse(
             path=output_path,
             media_type="video/mp4",
-            filename=f"processed_{video.filename}"
+            filename=f"processed_{video.filename}",
+            headers={"X-Processing-Time": str(total_time)}
         )
         
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": str(e), "processing_times": processing_times}
         
     finally:
         # Cleanup
