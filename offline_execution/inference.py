@@ -31,7 +31,8 @@ def inference(self,
 
     
 @torch.no_grad()
-def inference(inference_config, bbox_shift, result_dir, fps, batch_size, output_vid_name, use_saved_coord, use_float16, gpu_id):
+def inference(video_path, audio_path, result_dir, bbox_shift=0, fps=25, batch_size=8,
+             output_vid_name=None, use_saved_coord=False, use_float16=False, gpu_id=0):
     # Set the device
     if torch.cuda.is_available():
         device = torch.device(f"cuda:{gpu_id}")
@@ -46,18 +47,13 @@ def inference(inference_config, bbox_shift, result_dir, fps, batch_size, output_
         pe = pe.half()
         vae.vae = vae.vae.half()
         unet.model = unet.model.half()
-    
-
-    video_path = inference_config[task_id]["video_path"]
-    audio_path = inference_config[task_id]["audio_path"]
-    bbox_shift = inference_config[task_id].get("bbox_shift", bbox_shift)
 
     input_basename = os.path.basename(video_path).split('.')[0]
-    audio_basename  = os.path.basename(audio_path).split('.')[0]
+    audio_basename = os.path.basename(audio_path).split('.')[0]
     output_basename = f"{input_basename}_{audio_basename}"
-    result_img_save_path = os.path.join(result_dir, output_basename) # related to video & audio inputs
-    crop_coord_save_path = os.path.join(result_img_save_path, input_basename+".pkl") # only related to video input
-    os.makedirs(result_img_save_path,exist_ok =True)
+    result_img_save_path = os.path.join(result_dir, output_basename)
+    crop_coord_save_path = os.path.join(result_img_save_path, input_basename+".pkl")
+    os.makedirs(result_img_save_path, exist_ok=True)
     
     if output_vid_name is None:
         output_vid_name = os.path.join(result_dir, output_basename+".mp4")
@@ -159,7 +155,8 @@ def inference(inference_config, bbox_shift, result_dir, fps, batch_size, output_
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--inference_config", type=str, default="configs/inference/test.yaml")
+    parser.add_argument("--video_path", type=str, required=True, help="data/video/sun.mp4")
+    parser.add_argument("--audio_path", type=str, required=True, help="data/audio/sun.wav")
     parser.add_argument("--bbox_shift", type=int, default=0)
     parser.add_argument("--result_dir", default='./results', help="path to output")
     parser.add_argument("--fps", type=int, default=25)
@@ -174,4 +171,5 @@ if __name__ == "__main__":
     parser.add_argument("--gpu_id", type=int, default=0, help="CUDA GPU ID to use for inference")
 
     args = parser.parse_args()
-    inference(args.inference_config, args.bbox_shift, args.result_dir, args.fps, args.batch_size, args.output_vid_name, args.use_saved_coord, args.use_float16, args.gpu_id)
+    inference(args.video_path, args.audio_path, args.result_dir, args.bbox_shift, args.fps,
+             args.batch_size, args.output_vid_name, args.use_saved_coord, args.use_float16, args.gpu_id)
