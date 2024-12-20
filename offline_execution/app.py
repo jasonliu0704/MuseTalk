@@ -8,9 +8,9 @@ import os
 from pathlib import Path
 import subprocess
 import uuid
-from client import tts
+from .client import tts
 from pydantic import BaseModel
-import inference
+from .inference import inference
 
 class VideoRequest(BaseModel):
     text: str = "Hello, this is a default message"
@@ -70,7 +70,7 @@ async def process_video(
         tts(request.text, tts_wav=sound_output_path)
         
         # Run inference with direct parameters
-        inference.inference(
+        inference(
             video_path=str(input_path),
             audio_path=str(sound_output_path),
             result_dir=str(OUTPUT_DIR),
