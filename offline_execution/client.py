@@ -25,36 +25,36 @@ def tts(tts_text, tts_wav="", host='0.0.0.0', port=50000, mode='zero_shot',
     url = f"http://{host}:{port}/inference_{mode}"
     if mode == 'sft':
         payload = {
-            'tts_text': args.tts_text,
-            'spk_id': args.spk_id
+            'tts_text': tts_text,
+            'spk_id': spk_id
         }
         response = requests.request("GET", url, data=payload, stream=True)
-    elif args.mode == 'zero_shot':
+    elif mode == 'zero_shot':
         payload = {
-            'tts_text': args.tts_text,
-            'prompt_text': args.prompt_text
+            'tts_text': tts_text,
+            'prompt_text': prompt_text
         }
-        files = [('prompt_wav', ('prompt_wav', open(args.prompt_wav, 'rb'), 'application/octet-stream'))]
+        files = [('prompt_wav', ('prompt_wav', open(prompt_wav, 'rb'), 'application/octet-stream'))]
         response = requests.request("GET", url, data=payload, files=files, stream=True)
-    elif args.mode == 'cross_lingual':
+    elif mode == 'cross_lingual':
         payload = {
-            'tts_text': args.tts_text,
+            'tts_text':  tts_text,
         }
-        files = [('prompt_wav', ('prompt_wav', open(args.prompt_wav, 'rb'), 'application/octet-stream'))]
+        files = [('prompt_wav', ('prompt_wav', open( prompt_wav, 'rb'), 'application/octet-stream'))]
         response = requests.request("GET", url, data=payload, files=files, stream=True)
     else:
         payload = {
-            'tts_text': args.tts_text,
-            'spk_id': args.spk_id,
-            'instruct_text': args.instruct_text
+            'tts_text':  tts_text,
+            'spk_id':  spk_id,
+            'instruct_text':  instruct_text
         }
         response = requests.request("GET", url, data=payload, stream=True)
     tts_audio = b''
     for r in response.iter_content(chunk_size=16000):
         tts_audio += r
     tts_speech = torch.from_numpy(np.array(np.frombuffer(tts_audio, dtype=np.int16))).unsqueeze(dim=0)
-    logging.info('save response to {}'.format(args.tts_wav))
-    torchaudio.save(args.tts_wav, tts_speech, target_sr)
+    logging.info('save response to {}'.format( tts_wav))
+    torchaudio.save( tts_wav, tts_speech, target_sr)
     logging.info('get response')
 
 

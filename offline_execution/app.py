@@ -15,6 +15,7 @@ import time
 import logging
 from typing import Optional
 from fastapi import Form
+from fastapi import HTTPException
 
 # Configure logging
 logging.basicConfig(
@@ -82,7 +83,7 @@ async def process_video(
             logger.info("No video provided, using default video")
             if not DEFAULT_VIDEO.exists():
                 logger.error("Default video not found")
-                return {"error": "Default video not found"}
+                raise HTTPException(status_code=500, detail="Default video not found")
             shutil.copy(DEFAULT_VIDEO, input_path)
         processing_times['file_save'] = time.time() - file_save_start
         logger.info(f"File saved successfully in {processing_times['file_save']:.2f}s")
