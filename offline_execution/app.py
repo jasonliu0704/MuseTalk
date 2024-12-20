@@ -10,7 +10,7 @@ import subprocess
 import uuid
 from client import tts
 from pydantic import BaseModel
-from ..scripts import inference
+import inference
 
 class VideoRequest(BaseModel):
     text: str = "Hello, this is a default message"
@@ -51,7 +51,8 @@ async def process_video(
     # Generate unique ID for this job
     job_id = str(uuid.uuid4())
     input_path = UPLOAD_DIR / f"{job_id}_input.mp4"
-    output_path = OUTPUT_DIR / f"{job_id}_output.mp4"
+    output_vid_name = f"{job_id}_output.mp4"
+    output_path = OUTPUT_DIR / output_vid_name
     sound_output_path = OUTPUT_DIR / f"{job_id}_sound_output.wav"
     
     try:
@@ -69,13 +70,11 @@ async def process_video(
         tts(request.text, tts_wav=sound_output_path)
         
         # Run inference with direct parameters
-        inference(
+        inference.inference(
             video_path=str(input_path),
             audio_path=str(sound_output_path),
             result_dir=str(OUTPUT_DIR),
-            fps=25,
-            batch_size=8,
-            output_vid_name=str(output_path)
+            output_vid_name=str(output_vid_name)
         )
         
         return FileResponse(
@@ -89,7 +88,7 @@ async def process_video(
         
     finally:
         # Cleanup
-        for path in [input_path, temp_path]:
+        for path in [input_path, sound_output_path]:
             if path.exists():
                 os.remove(path)
 
