@@ -126,4 +126,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     prompt_sr, target_sr = 16000, 22050
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8008)
