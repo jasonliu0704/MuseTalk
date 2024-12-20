@@ -14,6 +14,7 @@ from .inference import inference
 import time
 import logging
 from typing import Optional
+from fastapi import Form
 
 # Configure logging
 logging.basicConfig(
@@ -54,7 +55,7 @@ DEFAULT_VIDEO = Path("data/video/santa.mp4")
 
 @app.post("/process-video")
 async def process_video(
-    request: VideoRequest,
+    text: str = Form(...),
     video: Optional[UploadFile] = File(None)
 ):
     start_time = time.time()
@@ -62,7 +63,7 @@ async def process_video(
     
     job_id = str(uuid.uuid4())
     logger.info(f"Starting new job {job_id}")
-    logger.info(f"Request text: {request.text}")
+    logger.info(f"Request text: {text}")
     logger.info(f"Input video filename: {video.filename}")
     
     input_path = UPLOAD_DIR / f"{job_id}_input.mp4"
@@ -89,7 +90,7 @@ async def process_video(
         # Generate voice
         logger.info("Starting TTS generation")
         tts_start = time.time()
-        tts(request.text, tts_wav=sound_output_path)
+        tts(text, tts_wav=sound_output_path)
         processing_times['tts'] = time.time() - tts_start
         logger.info(f"TTS completed in {processing_times['tts']:.2f}s")
         
