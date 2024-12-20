@@ -155,8 +155,8 @@ def inference(video_path, audio_path, result_dir, bbox_shift=0, fps=25, batch_si
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--video_path", type=str, required=True, help="data/video/sun.mp4")
-    parser.add_argument("--audio_path", type=str, required=True, help="data/audio/sun.wav")
+    parser.add_argument("--video_path", type=str, default='data/video/sun.mp4', help="")
+    parser.add_argument("--audio_path", type=str, default='data/audio/sun.wav', help="")
     parser.add_argument("--bbox_shift", type=int, default=0)
     parser.add_argument("--result_dir", default='./results', help="path to output")
     parser.add_argument("--fps", type=int, default=25)
@@ -173,3 +173,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     inference(args.video_path, args.audio_path, args.result_dir, args.bbox_shift, args.fps,
              args.batch_size, args.output_vid_name, args.use_saved_coord, args.use_float16, args.gpu_id)
+
+# run: muse-proj/bin/python -m offline_execution.inference
