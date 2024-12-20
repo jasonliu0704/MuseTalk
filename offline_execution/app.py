@@ -51,7 +51,7 @@ for dir in [UPLOAD_DIR, OUTPUT_DIR, TEMP_DIR]:
 async def serve_index():
     return FileResponse("static/index.html")
 
-DEFAULT_VIDEO = Path("/mnt/data/MuseTalk/data/video/santa.mov")
+DEFAULT_VIDEO = Path("/mnt/data/MuseTalk/data/video/santa-wide.mov")
 
 @app.post("/process-video")
 async def process_video(
