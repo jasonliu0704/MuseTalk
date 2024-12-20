@@ -20,35 +20,54 @@ audio_processor, vae, unet, pe = load_all_model()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 timesteps = torch.tensor([0], device=device)
 
+
+def inference(self, 
+                audio_path, 
+                out_vid_name, 
+                fps,
+                skip_save_images):
+    
+    print("start inference")
+
+    
 @torch.no_grad()
-def main(args):
+def inference(inference_config, bbox_shift, result_dir, fps, batch_size, output_vid_name, use_saved_coord, use_float16, gpu_id):
+    # Set the device
+    if torch.cuda.is_available():
+        device = torch.device(f"cuda:{gpu_id}")
+        print(f"Using GPU: {gpu_id}")
+    else:
+        device = torch.device("cpu")
+        print("CUDA not available. Using CPU.")
+    timesteps = torch.tensor([0], device=device)
+
     global pe
-    if args.use_float16 is True:
+    if use_float16:
         pe = pe.half()
         vae.vae = vae.vae.half()
         unet.model = unet.model.half()
     
-    inference_config = OmegaConf.load(args.inference_config)
+    inference_config = OmegaConf.load(inference_config)
     print(inference_config)
     for task_id in inference_config:
         video_path = inference_config[task_id]["video_path"]
         audio_path = inference_config[task_id]["audio_path"]
-        bbox_shift = inference_config[task_id].get("bbox_shift", args.bbox_shift)
+        bbox_shift = inference_config[task_id].get("bbox_shift", bbox_shift)
 
         input_basename = os.path.basename(video_path).split('.')[0]
         audio_basename  = os.path.basename(audio_path).split('.')[0]
         output_basename = f"{input_basename}_{audio_basename}"
-        result_img_save_path = os.path.join(args.result_dir, output_basename) # related to video & audio inputs
+        result_img_save_path = os.path.join(result_dir, output_basename) # related to video & audio inputs
         crop_coord_save_path = os.path.join(result_img_save_path, input_basename+".pkl") # only related to video input
         os.makedirs(result_img_save_path,exist_ok =True)
         
-        if args.output_vid_name is None:
-            output_vid_name = os.path.join(args.result_dir, output_basename+".mp4")
+        if output_vid_name is None:
+            output_vid_name = os.path.join(result_dir, output_basename+".mp4")
         else:
-            output_vid_name = os.path.join(args.result_dir, args.output_vid_name)
+            output_vid_name = os.path.join(result_dir, output_vid_name)
         ############################################## extract frames from source video ##############################################
         if get_file_type(video_path)=="video":
-            save_dir_full = os.path.join(args.result_dir, input_basename)
+            save_dir_full = os.path.join(result_dir, input_basename)
             os.makedirs(save_dir_full,exist_ok = True)
             cmd = f"ffmpeg -v fatal -i {video_path} -start_number 0 {save_dir_full}/%08d.png"
             os.system(cmd)
@@ -56,11 +75,11 @@ def main(args):
             fps = get_video_fps(video_path)
         elif get_file_type(video_path)=="image":
             input_img_list = [video_path, ]
-            fps = args.fps
+            fps = fps
         elif os.path.isdir(video_path):  # input img folder
             input_img_list = glob.glob(os.path.join(video_path, '*.[jpJP][pnPN]*[gG]'))
             input_img_list = sorted(input_img_list, key=lambda x: int(os.path.splitext(os.path.basename(x))[0]))
-            fps = args.fps
+            fps = fps
         else:
             raise ValueError(f"{video_path} should be a video file, an image file or a directory of images")
 
@@ -69,7 +88,7 @@ def main(args):
         whisper_feature = audio_processor.audio2feat(audio_path)
         whisper_chunks = audio_processor.feature2chunks(feature_array=whisper_feature,fps=fps)
         ############################################## preprocess input image  ##############################################
-        if os.path.exists(crop_coord_save_path) and args.use_saved_coord:
+        if os.path.exists(crop_coord_save_path) and use_saved_coord:
             print("using extracted coordinates")
             with open(crop_coord_save_path,'rb') as f:
                 coord_list = pickle.load(f)
@@ -98,7 +117,7 @@ def main(args):
         ############################################## inference batch by batch ##############################################
         print("start inference")
         video_num = len(whisper_chunks)
-        batch_size = args.batch_size
+        batch_size = batch_size
         gen = datagen(whisper_chunks,input_latent_list_cycle,batch_size)
         res_frame_list = []
         for i, (whisper_batch,latent_batch) in enumerate(tqdm(gen,total=int(np.ceil(float(video_num)/batch_size)))):
@@ -142,10 +161,9 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--inference_config", type=str, default="configs/inference/test_img.yaml")
+    parser.add_argument("--inference_config", type=str, default="configs/inference/test.yaml")
     parser.add_argument("--bbox_shift", type=int, default=0)
     parser.add_argument("--result_dir", default='./results', help="path to output")
-
     parser.add_argument("--fps", type=int, default=25)
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--output_vid_name", type=str, default=None)
@@ -154,8 +172,8 @@ if __name__ == "__main__":
                         help='use saved coordinate to save time')
     parser.add_argument("--use_float16",
                         action="store_true",
-                        help="Whether use float16 to speed up inference",
-    )
+                        help="Whether use float16 to speed up inference")
+    parser.add_argument("--gpu_id", type=int, default=0, help="CUDA GPU ID to use for inference")
 
     args = parser.parse_args()
-    main(args)
+    inference(args.inference_config, args.bbox_shift, args.result_dir, args.fps, args.batch_size, args.output_vid_name, args.use_saved_coord, args.use_float16, args.gpu_id)

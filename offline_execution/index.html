@@ -1,0 +1,87 @@
+static/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .video-container {
+            margin: 20px 0;
+        }
+        #videoPlayer {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .upload-form {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+        }
+        .progress {
+            display: none;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Processor</h1>
+    
+    <div class="upload-form">
+        <input type="file" id="videoInput" accept="video/*">
+        <button onclick="uploadVideo()">Upload & Process</button>
+        <div class="progress" id="progress">Processing...</div>
+    </div>
+
+    <div class="video-container">
+        <video id="videoPlayer" width="800" controls>
+            <source src="" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+    </div>
+
+    <script>
+        async function uploadVideo() {
+            const fileInput = document.getElementById('videoInput');
+            const progress = document.getElementById('progress');
+            const video = document.getElementById('videoPlayer');
+            
+            if (!fileInput.files.length) {
+                alert('Please select a video file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('video', fileInput.files[0]);
+            
+            progress.style.display = 'block';
+            
+            try {
+                const response = await fetch('/video-stream', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    video.src = URL.createObjectURL(await response.blob());
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                progress.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

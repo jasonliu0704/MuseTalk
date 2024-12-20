@@ -1,0 +1,4 @@
+cozyvoice server:
+
+server.py --port 50000 --model_dir pretrained_models/CosyVoice2-0.5B && sleep infinity"
+python runtime/python/fastapi/server.py --port 50000 --model_dir iic/CosyVoice-300M
