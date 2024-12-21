@@ -39,7 +39,7 @@ asyncio.get_event_loop().set_default_executor(
 config = Config(
     "app:app",
     host="0.0.0.0",
-    port=8000,
+    port=8008,
     workers=16,
     limit_concurrency=100,     # Max concurrent connections
     limit_max_requests=10000,  # Max requests before worker restart  
