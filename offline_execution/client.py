@@ -91,4 +91,4 @@ if __name__ == "__main__":
                         default='demo.wav')
     args = parser.parse_args()
     prompt_sr, target_sr = 16000, 22050
-    tts(args.tts_text) #, args.tts_wav, args.host, args.port, args.mode, args.spk_id, args.prompt_text, args.prompt_wav, args.instruct_text)
+    tts(args.tts_text, args.tts_wav) # args.host, args.port, args.mode, args.spk_id, args.prompt_text, args.prompt_wav, args.instruct_text)
