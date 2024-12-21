@@ -48,7 +48,7 @@ TEMP_DIR = Path("temp")
 for dir in [UPLOAD_DIR, OUTPUT_DIR, TEMP_DIR]:
     dir.mkdir(exist_ok=True)
 
-DEFAULT_VIDEO = Path("/mnt/data/MuseTalk/data/video/santa-wide.mov")
+DEFAULT_VIDEO = Path("/mnt/data/MuseTalk/data/video/santa-s.mov")
 
 @app.post("/process-video")
 async def process_video(
