@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host',
                         type=str,
-                        default='0.0.0.0')
+                        default='34.170.108.64')
     parser.add_argument('--port',
                         type=int,
                         default='50000')
@@ -78,10 +78,10 @@ if __name__ == "__main__":
                         default='中文女')
     parser.add_argument('--prompt_text',
                         type=str,
-                        default='希望你以后能够做的比我还好呦。')
+                        default='Hohoho! Happy holidays to all. With lots of love. From evlevenlab.')
     parser.add_argument('--prompt_wav',
                         type=str,
-                        default='../../../zero_shot_prompt.wav')
+                        default='santa.m4a')
     parser.add_argument('--instruct_text',
                         type=str,
                         default='Theo \'Crimson\', is a fiery, passionate rebel leader. \
@@ -91,4 +91,4 @@ if __name__ == "__main__":
                         default='demo.wav')
     args = parser.parse_args()
     prompt_sr, target_sr = 16000, 22050
-    tts(args.tts_text, args.tts_wav, args.host, args.port, args.mode, args.spk_id, args.prompt_text, args.prompt_wav, args.instruct_text)
+    tts(args.tts_text) #, args.tts_wav, args.host, args.port, args.mode, args.spk_id, args.prompt_text, args.prompt_wav, args.instruct_text)
