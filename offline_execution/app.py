@@ -45,7 +45,7 @@ config = Config(
     limit_max_requests=10000,  # Max requests before worker restart  
     backlog=2048,             # Connection queue size
     timeout_keep_alive=5,     # Keep-alive timeout
-    loop="uvloop"             # Fast event loop implementation
+    # loop="uvloop"             # Fast event loop implementation
 )
 
 class VideoRequest(BaseModel):
@@ -196,5 +196,5 @@ if __name__ == "__main__":
                         default='demo.wav')
     args = parser.parse_args()
     prompt_sr, target_sr = 16000, 22050
-    uvicorn.Server(config).run()
+    uvicorn.Server(config).run(app, host="0.0.0.0", port=8008)
     # uvicorn.run(app, host="0.0.0.0", port=8008)
