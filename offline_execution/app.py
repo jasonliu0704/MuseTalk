@@ -48,10 +48,6 @@ TEMP_DIR = Path("temp")
 for dir in [UPLOAD_DIR, OUTPUT_DIR, TEMP_DIR]:
     dir.mkdir(exist_ok=True)
 
-@app.get("/")
-async def serve_index():
-    return FileResponse("static/index.html")
-
 DEFAULT_VIDEO = Path("/mnt/data/MuseTalk/data/video/santa-wide.mov")
 
 @app.post("/process-video")
@@ -61,6 +57,13 @@ async def process_video(
 ):
     start_time = time.time()
     processing_times = {}
+
+    # Check if text exceeds 280 words
+    word_count = len(text.split())
+    WORD_LIMIT = 280
+    if word_count > WORD_LIMIT:
+        raise HTTPException(status_code=400, detail=f"Text exceeds {WORD_LIMIT} words limit")
+    
     
     job_id = str(uuid.uuid4())
     logger.info(f"Starting new job {job_id}")
@@ -120,7 +123,7 @@ async def process_video(
         return FileResponse(
             path=output_path,
             media_type="video/mp4",
-            filename=f"processed_{video.filename}",
+            filename=f"{output_vid_name}",
             headers={"X-Processing-Time": str(total_time)}
         )
         
