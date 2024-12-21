@@ -196,5 +196,5 @@ if __name__ == "__main__":
                         default='demo.wav')
     args = parser.parse_args()
     prompt_sr, target_sr = 16000, 22050
-    uvicorn.run(config)
+    uvicorn.Server(config).run()
     # uvicorn.run(app, host="0.0.0.0", port=8008)
