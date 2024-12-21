@@ -21,7 +21,7 @@ import numpy as np
 
 def tts(tts_text, tts_wav="", host='0.0.0.0', port=50000, mode='zero_shot', 
         spk_id='中文女', prompt_text='Hohoho! Happy holidays to all. With lots of love. From evlevenlab.', 
-        prompt_wav='/mnt/data/voice/santa.m4a', instruct_text=''):
+        prompt_wav='/mnt/data/voice/santa.m4a', instruct_text='', target_sr=22050):
     url = f"http://{host}:{port}/inference_{mode}"
     if mode == 'sft':
         payload = {
