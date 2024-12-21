@@ -18,6 +18,19 @@ import torch
 import torchaudio
 import numpy as np
 
+def amplify_audio(audio_path: str, gain_db: float = 6.0):
+    """Amplify audio volume by gain_db decibels"""
+    # Load audio
+    waveform, sample_rate = torchaudio.load(audio_path)
+    
+    # Calculate linear gain from dB
+    gain_factor = 10 ** (gain_db / 20.0)
+    
+    # Apply gain with clipping protection
+    amplified = torch.clamp(waveform * gain_factor, -1.0, 1.0)
+    
+    # Save back to file
+    torchaudio.save(audio_path, amplified, sample_rate)
 
 def tts(tts_text, tts_wav="", host='0.0.0.0', port=50000, mode='zero_shot', 
         spk_id='中文女', prompt_text='Hohoho! Happy holidays to all. With lots of love. From evlevenlab.', 
@@ -54,7 +67,8 @@ def tts(tts_text, tts_wav="", host='0.0.0.0', port=50000, mode='zero_shot',
         tts_audio += r
     tts_speech = torch.from_numpy(np.array(np.frombuffer(tts_audio, dtype=np.int16))).unsqueeze(dim=0)
     logging.info('save response to {}'.format( tts_wav))
-    torchaudio.save( tts_wav, tts_speech, target_sr)
+    tts_speech = torch.clamp(tts_speech * 2, -1.0, 1.0)  # Increase volume by 100%
+    torchaudio.save(tts_wav, tts_speech, target_sr)
     logging.info('get response')
 
 
