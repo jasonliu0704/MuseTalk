@@ -135,7 +135,7 @@ async def process_video(
     finally:
         # Cleanup
         logger.info("Cleaning up temporary files")
-        for path in [input_path, sound_output_path]:
+        for path in [input_path]:
             if path.exists():
                 os.remove(path)
                 logger.debug(f"Removed temporary file: {path}")
