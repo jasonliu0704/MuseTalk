@@ -17,6 +17,7 @@ import requests
 import torch
 import torchaudio
 import numpy as np
+import torchaudio.transforms as T
 
 def process_audio(audio_tensor, target_sr=22050, gain_factor=1.5):
     # Normalize to -1 to 1 range
