@@ -18,23 +18,36 @@ import torch
 import torchaudio
 import numpy as np
 import torchaudio.transforms as T
+import torch.nn as nn
 
 def process_audio(audio_tensor, target_sr=22050, gain_factor=1.5):
+    """
+    Process audio by increasing volume and applying compression and fades.
+
+    Args:
+        audio_tensor (torch.Tensor): Input audio tensor.
+        target_sr (int): Target sample rate.
+        gain_factor (float): Factor to amplify the volume.
+
+    Returns:
+        torch.Tensor: Processed audio tensor.
+    """
     # Normalize to -1 to 1 range
     audio_tensor = audio_tensor.float() / 32768.0
     
-    # Apply gain with headroom
-    # gain_factor = 10 ** (gain_db / 20.0)
+    # Apply gain
     audio_tensor = audio_tensor * gain_factor
     
-    # Add subtle compression
-    compressor = T.Compose([
+    # Define compressor using nn.Sequential
+    compressor = nn.Sequential(
         T.SoftLimiter(threshold_db=-1.0),
         T.Fade(fade_in_len=100, fade_out_len=100)  # Smooth fade in/out
-    ])
+    )
+    
+    # Apply compressor
     audio_tensor = compressor(audio_tensor)
     
-    # Final peak limiting
+    # Final peak limiting to prevent clipping
     audio_tensor = torch.clamp(audio_tensor, -0.95, 0.95)
     
     return audio_tensor
