@@ -20,6 +20,16 @@ import numpy as np
 import torchaudio.transforms as T
 import torch.nn as nn
 
+class SoftLimiter(nn.Module):
+    def __init__(self, threshold_db=-1.0):
+        super(SoftLimiter, self).__init__()
+        self.threshold_linear = 10 ** (threshold_db / 20.0)
+
+    def forward(self, x):
+        # Apply soft limiting
+        x = torch.sign(x) * (1 - torch.exp(-torch.abs(x) / self.threshold_linear)) * self.threshold_linear
+        return x
+
 def process_audio(audio_tensor, target_sr=22050, gain_factor=1.5):
     """
     Process audio by increasing volume and applying compression and fades.
@@ -34,22 +44,37 @@ def process_audio(audio_tensor, target_sr=22050, gain_factor=1.5):
     """
     # Normalize to -1 to 1 range
     audio_tensor = audio_tensor.float() / 32768.0
-    
+
     # Apply gain
     audio_tensor = audio_tensor * gain_factor
-    
-    # Define compressor using nn.Sequential
-    compressor = nn.Sequential(
-        T.SoftLimiter(threshold_db=-1.0),
-        T.Fade(fade_in_len=100, fade_out_len=100)  # Smooth fade in/out
-    )
-    
+
+    # Define compressor (Soft Limiter)
+    compressor = SoftLimiter(threshold_db=-1.0)
+
     # Apply compressor
     audio_tensor = compressor(audio_tensor)
-    
+
+    # Apply fade in/out
+    fade_in_len = 100  # in samples
+    fade_out_len = 100  # in samples
+
+    # Ensure audio_tensor has enough samples
+    if audio_tensor.size(-1) < (fade_in_len + fade_out_len):
+        fade_in_len = fade_out_len = audio_tensor.size(-1) // 2
+
+    # Create fade in and fade out envelopes
+    fade_in = torch.linspace(0.0, 1.0, steps=fade_in_len)
+    fade_out = torch.linspace(1.0, 0.0, steps=fade_out_len)
+
+    # Apply fade in
+    audio_tensor[..., :fade_in_len] *= fade_in
+
+    # Apply fade out
+    audio_tensor[..., -fade_out_len:] *= fade_out
+
     # Final peak limiting to prevent clipping
     audio_tensor = torch.clamp(audio_tensor, -0.95, 0.95)
-    
+
     return audio_tensor
 
 def tts(tts_text, tts_wav="", host='0.0.0.0', port=50000, mode='zero_shot', 
