@@ -27,26 +27,26 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-import asyncio
-from uvicorn.config import Config
+# import asyncio
+# from uvicorn.config import Config
 
 # Increase event loop limits
-asyncio.get_event_loop().set_default_executor(
-    concurrent.futures.ThreadPoolExecutor(max_workers=100)
-)
+# asyncio.get_event_loop().set_default_executor(
+#     concurrent.futures.ThreadPoolExecutor(max_workers=100)
+# )
 
 # Configure Uvicorn with custom limits
-config = Config(
-    "app:app",
-    host="0.0.0.0",
-    port=8008,
-    workers=16,
-    limit_concurrency=100,     # Max concurrent connections
-    limit_max_requests=10000,  # Max requests before worker restart  
-    backlog=2048,             # Connection queue size
-    timeout_keep_alive=5,     # Keep-alive timeout
-    # loop="uvloop"             # Fast event loop implementation
-)
+# config = Config(
+#     "app:app",
+#     host="0.0.0.0",
+#     port=8008,
+#     workers=16,
+#     limit_concurrency=100,     # Max concurrent connections
+#     limit_max_requests=10000,  # Max requests before worker restart  
+#     backlog=2048,             # Connection queue size
+#     timeout_keep_alive=5,     # Keep-alive timeout
+#     # loop="uvloop"             # Fast event loop implementation
+# )
 
 class VideoRequest(BaseModel):
     text: str = "Hello, this is a default message"
@@ -196,5 +196,5 @@ if __name__ == "__main__":
                         default='demo.wav')
     args = parser.parse_args()
     prompt_sr, target_sr = 16000, 22050
-    uvicorn.Server(config).run()
-    # uvicorn.run(app, host="0.0.0.0", port=8008)
+    # uvicorn.Server(config).run()
+    uvicorn.run(app, host="0.0.0.0", port=8008, threaded=True, debug=True)
