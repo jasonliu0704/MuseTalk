@@ -30,7 +30,7 @@ class SoftLimiter(nn.Module):
         x = torch.sign(x) * (1 - torch.exp(-torch.abs(x) / self.threshold_linear)) * self.threshold_linear
         return x
 
-def process_audio(audio_tensor, target_sr=22050, gain_factor=3):
+def process_audio(audio_tensor, target_sr=22050, gain_factor=7):
     """
     Process audio by increasing volume and applying compression and fades.
 
