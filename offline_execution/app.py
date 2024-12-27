@@ -198,3 +198,10 @@ if __name__ == "__main__":
     prompt_sr, target_sr = 16000, 22050
     # uvicorn.Server(config).run()
     uvicorn.run(app, host="0.0.0.0", port=8008, threaded=True, debug=True)
+
+muse-proj/bin/python -m uvicorn offline_execution.app:app \
+--host 0.0.0.0 \
+--port 8008 \
+--workers 2 \
+--limit-concurrency 100 \
+--backlog 2048
